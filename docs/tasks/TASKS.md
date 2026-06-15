@@ -46,8 +46,8 @@
 - [x] Web : `lib/payload` (nav/page), `lib/lexical` (richtext→HTML)
 - [x] Web : `Base.astro` header/footer + design system, `[lang]/index`, `[lang]/[slug]`
 - [x] Build/run Tulear OK : 21 pages, nav + switch de langue vérifiés ([FR]/[ES]/[EN]/[DE])
-- [~] Déploiement Avignon : migrate + seed + régénération SSG → en cours
-- [ ] Demander test à Val (toutes les pages, switch de langue)
+- [x] Déploiement Avignon : migrate (`add_nav_fields`) + seed + régénération SSG — OK, 20 pages (4 langues × 5) en HTTP 200
+- [~] Test/validation Val sur Avignon (toutes les pages, switch de langue) → en attente
 
 ## Backlog (FEAT suivants)
 - [ ] FEAT-004 — Page-builder à blocs (Hero, ServicesGrid, PullQuote, FounderSignature…) + SEO

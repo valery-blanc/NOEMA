@@ -1,0 +1,22 @@
+# NOÊMA — override de test local (Tulear). Pas de Traefik : on expose les ports.
+# Pré-requis : le réseau externe `web` doit exister → `docker network create web`.
+# Lancer : docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+services:
+  postgres:
+    ports:
+      - '5432:5432'
+
+  cms:
+    environment:
+      PAYLOAD_PUBLIC_SERVER_URL: http://localhost:3000
+    ports:
+      - '3000:3000'
+
+  web-build:
+    environment:
+      CMS_INTERNAL_URL: http://cms:3000
+      PUBLIC_SITE_URL: http://localhost:8080
+
+  web:
+    ports:
+      - '8080:80'

@@ -1,0 +1,17 @@
+{
+  "name": "@noema/web",
+  "version": "0.1.0",
+  "description": "NOÊMA — front Astro (SSG), branché sur Payload",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "6.4.7"
+  }
+}

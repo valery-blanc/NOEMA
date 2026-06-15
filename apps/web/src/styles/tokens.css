@@ -1,0 +1,51 @@
+/* NOÊMA — design tokens (source : docs/specs/noema-spec.md §5).
+   Registre « chaleur éditoriale ». RTL-first : propriétés logiques uniquement. */
+:root {
+  /* Palette */
+  --c-ivory: #F6F2EA;
+  --c-stone: #E7E0D3;
+  --c-sand: #D8C9B0;
+  --c-petrol: #15333B;
+  --c-petrol-deep: #0F262C;
+  --c-charcoal: #2A2B29;
+  --c-charcoal-soft: #55564F;
+  --c-brass: #A6884F;
+  --c-brass-soft: #C2A973;
+
+  /* Typographie */
+  --ff-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --ff-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --fs-display: clamp(2.6rem, 6vw, 4.5rem);
+  --fs-h1: clamp(2rem, 4vw, 3rem);
+  --fs-h2: 2rem;
+  --fs-h3: 1.5rem;
+  --fs-body: 1.0625rem;
+  --fs-small: 0.875rem;
+
+  /* Rythme / largeurs */
+  --w-content: 72rem;
+  --w-prose: 42rem;
+  --space: 1.5rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--c-ivory);
+  color: var(--c-charcoal);
+  font-family: var(--ff-body);
+  font-size: var(--fs-body);
+  line-height: 1.7;
+}
+
+h1, h2, h3 {
+  font-family: var(--ff-display);
+  line-height: 1.1;
+  font-weight: 500;
+  margin-block: 0 0.5em;
+}
+
+a { color: inherit; }

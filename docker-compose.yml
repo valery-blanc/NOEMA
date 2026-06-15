@@ -1,0 +1,106 @@
+# NOÊMA — orchestration (prod Avignon : Traefik + TLS sur réseau externe `web`).
+# postgres → cms (Payload/Next) → web-build (Astro SSG, one-shot) → web (nginx).
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks: [internal]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  # Applique les migrations Payload (schéma Postgres) avant de démarrer le CMS.
+  # En prod, le schéma est géré par migrations versionnées (pas de push auto).
+  cms-migrate:
+    build:
+      context: ./apps/cms
+      target: builder
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URI: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET}
+      NODE_ENV: production
+    command: ['sh', '-lc', 'pnpm payload migrate']
+    networks: [internal]
+    restart: 'no'
+
+  cms:
+    build:
+      context: ./apps/cms
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      cms-migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URI: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET}
+      PAYLOAD_PUBLIC_SERVER_URL: https://${ADMIN_HOST}
+      NODE_ENV: production
+    networks: [internal, web]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${TRAEFIK_NETWORK}
+      - traefik.http.routers.noema-cms.rule=Host(`${ADMIN_HOST}`)
+      - traefik.http.routers.noema-cms.entrypoints=${TRAEFIK_ENTRYPOINT}
+      - traefik.http.routers.noema-cms.tls.certresolver=${CERT_RESOLVER}
+      # Priorité > wildcard *.zitoon.com (platform-sites priority=1) sur Avignon.
+      - traefik.http.routers.noema-cms.priority=100
+      - traefik.http.services.noema-cms.loadbalancer.server.port=3000
+
+  # One-shot : attend le CMS, génère le statique dans le volume web_dist, puis s'arrête.
+  web-build:
+    build:
+      context: ./apps/web
+    depends_on:
+      cms:
+        condition: service_started
+    environment:
+      CMS_INTERNAL_URL: http://cms:3000
+      PUBLIC_SITE_URL: https://${PUBLIC_HOST}
+    volumes:
+      - web_dist:/out
+    networks: [internal]
+    restart: 'no'
+
+  web:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on:
+      web-build:
+        condition: service_completed_successfully
+    volumes:
+      - web_dist:/usr/share/nginx/html:ro
+      - ./apps/web/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks: [web]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${TRAEFIK_NETWORK}
+      - traefik.http.routers.noema-web.rule=Host(`${PUBLIC_HOST}`)
+      - traefik.http.routers.noema-web.entrypoints=${TRAEFIK_ENTRYPOINT}
+      - traefik.http.routers.noema-web.tls.certresolver=${CERT_RESOLVER}
+      # Priorité > wildcard *.zitoon.com (platform-sites priority=1) sur Avignon.
+      - traefik.http.routers.noema-web.priority=100
+      - traefik.http.services.noema-web.loadbalancer.server.port=80
+
+networks:
+  web:
+    external: true
+    name: ${TRAEFIK_NETWORK}
+  internal:
+    driver: bridge
+
+volumes:
+  pg_data:
+  web_dist:

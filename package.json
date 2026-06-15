@@ -1,0 +1,28 @@
+{
+  "name": "noema",
+  "version": "0.1.0",
+  "description": "NOÊMA — monorepo (front Astro + CMS Payload), dockerisé",
+  "private": true,
+  "license": "UNLICENSED",
+  "packageManager": "pnpm@10.18.0",
+  "scripts": {
+    "cms": "pnpm --filter @noema/cms",
+    "web": "pnpm --filter @noema/web",
+    "cms:dev": "pnpm --filter @noema/cms dev",
+    "web:dev": "pnpm --filter @noema/web dev",
+    "up": "docker compose up -d --build",
+    "up:dev": "docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build",
+    "down": "docker compose down"
+  },
+  "engines": {
+    "node": ">=20.9.0",
+    "pnpm": ">=9"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp",
+      "esbuild",
+      "unrs-resolver"
+    ]
+  }
+}

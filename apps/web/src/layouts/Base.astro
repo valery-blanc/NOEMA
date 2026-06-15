@@ -1,0 +1,25 @@
+---
+import '../styles/tokens.css'
+
+const { lang = 'fr', title = 'NOÊMA' } = Astro.props
+// RTL-first : la direction est dérivée de la langue (arabe/hébreu/farsi → rtl).
+const RTL = ['ar', 'he', 'fa', 'ur']
+const dir = RTL.includes(lang) ? 'rtl' : 'ltr'
+---
+<!doctype html>
+<html lang={lang} dir={dir}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

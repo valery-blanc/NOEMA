@@ -1,0 +1,26 @@
+# Dépendances
+node_modules/
+.pnpm-store/
+
+# Secrets & env
+.env
+.env.*
+!.env.example
+*.key
+
+# Builds / artefacts
+dist/
+.next/
+.astro/
+apps/cms/src/app/(payload)/admin/importMap.js.tmp
+
+# Uploads CMS (médias)
+apps/cms/media/
+uploads/
+
+# Divers
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.claude/settings.local.json

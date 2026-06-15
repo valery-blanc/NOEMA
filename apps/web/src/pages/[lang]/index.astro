@@ -1,0 +1,94 @@
+---
+import Base from '../../layouts/Base.astro'
+import { getSiteSettings, getPage } from '../../lib/payload.js'
+
+export function getStaticPaths() {
+  return ['fr', 'es', 'en', 'de'].map((lang) => ({ params: { lang } }))
+}
+
+const { lang } = Astro.params
+
+// Preuve de chaîne : CMS → API → front. Tolérant si le contenu n'existe pas encore.
+let settings = null
+let page = null
+let cmsError = null
+try {
+  settings = await getSiteSettings(lang)
+  page = await getPage('accueil', lang)
+} catch (e) {
+  cmsError = e instanceof Error ? e.message : String(e)
+}
+
+const siteName = settings?.siteName ?? 'NOÊMA'
+const tagline = settings?.tagline ?? ''
+const pageTitle = page?.title ?? ''
+const excerpt = page?.excerpt ?? ''
+
+const langs = ['fr', 'es', 'en', 'de']
+---
+<Base lang={lang} title={siteName}>
+  <main class="wrap">
+    <nav class="langs" aria-label="Langues">
+      {langs.map((l) => (
+        <a href={`/${l}/`} class={l === lang ? 'on' : ''} hreflang={l}>{l.toUpperCase()}</a>
+      ))}
+    </nav>
+
+    <header class="hero">
+      <h1>{siteName}</h1>
+      {tagline && <p class="tagline">{tagline}</p>}
+    </header>
+
+    {pageTitle && (
+      <section class="prose">
+        <h2>{pageTitle}</h2>
+        {excerpt && <p>{excerpt}</p>}
+      </section>
+    )}
+
+    <footer class="status">
+      {cmsError
+        ? <span class="ko">CMS injoignable : {cmsError}</span>
+        : <span class="ok">Chaîne CMS → API → front : OK</span>}
+    </footer>
+  </main>
+</Base>
+
+<style>
+  .wrap {
+    max-inline-size: var(--w-content);
+    margin-inline: auto;
+    padding-inline: var(--space);
+    padding-block: clamp(2rem, 8vh, 6rem);
+  }
+  .langs {
+    display: flex;
+    gap: 1rem;
+    font-size: var(--fs-small);
+    letter-spacing: 0.08em;
+    margin-block-end: clamp(3rem, 12vh, 8rem);
+  }
+  .langs a { text-decoration: none; color: var(--c-charcoal-soft); }
+  .langs a.on { color: var(--c-brass); font-weight: 500; }
+  .hero h1 {
+    font-size: var(--fs-display);
+    letter-spacing: 0.01em;
+    margin: 0;
+  }
+  .tagline {
+    font-family: var(--ff-display);
+    font-size: var(--fs-h3);
+    color: var(--c-charcoal-soft);
+    margin-block-start: 0.25rem;
+  }
+  .prose {
+    max-inline-size: var(--w-prose);
+    margin-block-start: clamp(2rem, 8vh, 5rem);
+  }
+  .status {
+    margin-block-start: clamp(3rem, 12vh, 8rem);
+    font-size: var(--fs-small);
+  }
+  .ok { color: var(--c-petrol); }
+  .ko { color: #9b3b2f; }
+</style>

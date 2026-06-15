@@ -1,6 +1,7 @@
 # FEAT-005 — Boutons Aperçu / Publier + workflow statique
 
-> Statut : **implémenté (Tulear), en attente du mot de passe aperçu pour déploiement Avignon**
+> Statut : **déployé sur Avignon — en attente de validation Val**
+> Aperçu : https://noema-preview.zitoon.com (basic-auth user « noema », noindex, TLS LE OK)
 > Date : 2026-06-15
 > Spec source de vérité : `docs/specs/noema-spec.md` (§9)
 > Pré-requis : FEAT-002/003 déployés.

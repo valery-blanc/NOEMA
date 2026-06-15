@@ -56,8 +56,9 @@
 - [x] Service `publisher` (build à la demande, 2 cibles) + service `preview` (nginx) + volume web_preview
 - [x] Traefik : basic-auth + noindex sur l'aperçu ; `.env(.example)` (PREVIEW_*, PUBLISH_TOKEN)
 - [x] Build/run Tulear OK : public 8080 + preview 8081 servis, triggers token/session 403 vérifiés
-- [ ] Mot de passe aperçu (Val) → déploiement Avignon + DNS noema-preview.zitoon.com
-- [ ] Demander test à Val (boutons Aperçu/Publier, accès aperçu protégé)
+- [x] Mot de passe aperçu (Val) → hash htpasswd dans `.env` Avignon (jamais commité)
+- [x] Déploiement Avignon OK : public 200, admin 200, aperçu 401 sans auth / 200 avec, X-Robots-Tag noindex, TLS LE émis
+- [~] Test/validation Val (boutons Aperçu/Publier dans l'admin, accès aperçu protégé) → en attente
 
 ## Backlog (FEAT suivants)
 - [ ] FEAT-004 — Page-builder à blocs (Hero, ServicesGrid, PullQuote, FounderSignature…) + SEO

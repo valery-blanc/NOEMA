@@ -24,3 +24,5 @@ uploads/
 Thumbs.db
 .vscode/
 .claude/settings.local.json
+.preview_pw
+.preview_basicauth_esc

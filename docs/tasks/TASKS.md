@@ -58,7 +58,7 @@
 - [x] Build/run Tulear OK : public 8080 + preview 8081 servis, triggers token/session 403 vérifiés
 - [x] Mot de passe aperçu (Val) → hash htpasswd dans `.env` Avignon (jamais commité)
 - [x] Déploiement Avignon OK : public 200, admin 200, aperçu 401 sans auth / 200 avec, X-Robots-Tag noindex, TLS LE émis
-- [~] Test/validation Val (boutons Aperçu/Publier dans l'admin, accès aperçu protégé) → en attente
+- [x] **Validé par Val (2026-06-15)** : boutons Aperçu/Publier OK, accès aperçu protégé OK
 
 ## Backlog (FEAT suivants)
 - [ ] FEAT-004 — Page-builder à blocs (Hero, ServicesGrid, PullQuote, FounderSignature…) + SEO

@@ -1,6 +1,6 @@
 # FEAT-005 — Boutons Aperçu / Publier + workflow statique
 
-> Statut : **déployé sur Avignon — en attente de validation Val**
+> Statut : **DONE — validé par Val (2026-06-15)**
 > Aperçu : https://noema-preview.zitoon.com (basic-auth user « noema », noindex, TLS LE OK)
 > Date : 2026-06-15
 > Spec source de vérité : `docs/specs/noema-spec.md` (§9)

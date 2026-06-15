@@ -66,8 +66,8 @@
 - [x] Front : nav « rail-index » (folios) + affichage « marginalia/folios » + sommaire vivant (scroll-spy) + reveal (reduced-motion safe)
 - [x] Seed blocs labellisés [FR]/[ES]/[EN]/[DE] (mélanges variés par page)
 - [x] Build/run Tulear OK : 20 pages, blocs rendus, i18n + sommaire vérifiés
-- [~] Déploiement Avignon (reset DB lorem + migrate + seed + régénération) → en cours
-- [ ] Demander test à Val (nav, sommaire, blocs, switch langue)
+- [x] Déploiement Avignon (reset DB lorem + migrate + seed + régénération) — OK, 20 pages 200, blocs/nav/sommaire live (seed rejoué après course migration → BUG-003)
+- [~] Test/validation Val (nav rail-index, sommaire, blocs, switch langue) → en attente
 
 ## Backlog (FEAT suivants)
 - [ ] FEAT-006 — Charte définitive (Claude Design) + contenu réel + SEO + formulaire contact

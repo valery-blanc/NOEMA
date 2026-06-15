@@ -1,6 +1,7 @@
 # FEAT-004 — Page-builder à blocs + navigation/affichage originaux
 
-> Statut : **implémenté (Tulear), en cours de déploiement Avignon**
+> Statut : **déployé sur Avignon — en attente de validation Val**
+> Live : https://noema.zitoon.com (public) · https://noema-preview.zitoon.com (aperçu)
 > Date : 2026-06-15
 > Spec source de vérité : `docs/specs/noema-spec.md` (§4 nav, §5 design, §7 modèle, §8 pages)
 > Cadrage Val : ne pas investir la charte (couleurs/polices — faites en // avec Claude Design)

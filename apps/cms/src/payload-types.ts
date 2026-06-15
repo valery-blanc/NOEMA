@@ -71,7 +71,6 @@ export interface Config {
     media: Media;
     pages: Page;
     'payload-kv': PayloadKv;
-    'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -81,7 +80,6 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
-    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
@@ -184,9 +182,109 @@ export interface Page {
    */
   slug: string;
   /**
-   * Chapô / résumé court affiché en tête de page.
+   * Composition de la page par blocs (en-tête, texte, citation, index, signature, appel à l’action).
+   */
+  layout?:
+    | (
+        | {
+            /**
+             * Sur-titre court (capitales).
+             */
+            eyebrow?: string | null;
+            heading: string;
+            intro?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            /**
+             * Titre de section (apparaît dans le sommaire + folio en marge). Optionnel.
+             */
+            sectionTitle?: string | null;
+            body?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            /**
+             * Note de marge (marginalia) affichée à côté du texte. Optionnel.
+             */
+            note?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'prose';
+          }
+        | {
+            quote: string;
+            attribution?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pullquote';
+          }
+        | {
+            /**
+             * Titre de section (apparaît dans le sommaire + folio en marge). Optionnel.
+             */
+            sectionTitle?: string | null;
+            entries?:
+              | {
+                  label: string;
+                  text?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'indexList';
+          }
+        | {
+            /**
+             * Titre de section (apparaît dans le sommaire + folio en marge). Optionnel.
+             */
+            sectionTitle?: string | null;
+            name?: string | null;
+            role?: string | null;
+            bio?: string | null;
+            /**
+             * Portrait (optionnel ; emplacement réservé en attendant la séance photo).
+             */
+            portrait?: (number | null) | Media;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'signature';
+          }
+        | {
+            heading: string;
+            text?: string | null;
+            buttonLabel?: string | null;
+            /**
+             * Lien (ex. /fr/contact/ ou mailto:).
+             */
+            buttonHref?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+      )[]
+    | null;
+  /**
+   * Chapô / résumé court (repli si la page n’a pas de blocs).
    */
   excerpt?: string | null;
+  /**
+   * Contenu de repli (utilisé seulement si « layout » est vide).
+   */
   content?: {
     root: {
       type: string;
@@ -229,33 +327,6 @@ export interface PayloadKv {
     | number
     | boolean
     | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-locked-documents".
- */
-export interface PayloadLockedDocument {
-  id: number;
-  document?:
-    | ({
-        relationTo: 'users';
-        value: number | User;
-      } | null)
-    | ({
-        relationTo: 'media';
-        value: number | Media;
-      } | null)
-    | ({
-        relationTo: 'pages';
-        value: number | Page;
-      } | null);
-  globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -338,6 +409,71 @@ export interface MediaSelect<T extends boolean = true> {
 export interface PagesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  layout?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              eyebrow?: T;
+              heading?: T;
+              intro?: T;
+              id?: T;
+              blockName?: T;
+            };
+        prose?:
+          | T
+          | {
+              sectionTitle?: T;
+              body?: T;
+              note?: T;
+              id?: T;
+              blockName?: T;
+            };
+        pullquote?:
+          | T
+          | {
+              quote?: T;
+              attribution?: T;
+              id?: T;
+              blockName?: T;
+            };
+        indexList?:
+          | T
+          | {
+              sectionTitle?: T;
+              entries?:
+                | T
+                | {
+                    label?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        signature?:
+          | T
+          | {
+              sectionTitle?: T;
+              name?: T;
+              role?: T;
+              bio?: T;
+              portrait?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              heading?: T;
+              text?: T;
+              buttonLabel?: T;
+              buttonHref?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
   excerpt?: T;
   content?: T;
   showInNav?: T;
@@ -352,17 +488,6 @@ export interface PagesSelect<T extends boolean = true> {
 export interface PayloadKvSelect<T extends boolean = true> {
   key?: T;
   data?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-locked-documents_select".
- */
-export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
-  document?: T;
-  globalSlug?: T;
-  user?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

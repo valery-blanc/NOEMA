@@ -1,5 +1,6 @@
 ---
 import '../styles/tokens.css'
+import { buildToc, fmtFolio } from '../lib/toc.js'
 
 const {
   lang = 'fr',
@@ -8,6 +9,7 @@ const {
   title = 'NOÊMA',
   settings = null,
   navPages = [],
+  page = null,
 } = Astro.props
 
 // RTL-first : direction dérivée de la langue (arabe/hébreu/farsi → rtl).
@@ -20,6 +22,9 @@ const LANGS = ['fr', 'es', 'en', 'de']
 
 const pageHref = (slug) => (slug === 'accueil' ? `/${lang}/` : `/${lang}/${slug}/`)
 const langHref = (loc) => (isHome || currentSlug === 'accueil' ? `/${loc}/` : `/${loc}/${currentSlug}/`)
+
+// Sommaire vivant : sections de la page courante (blocs avec un titre de section).
+const toc = buildToc(page?.layout ?? [])
 ---
 <!doctype html>
 <html lang={lang} dir={dir}>
@@ -35,150 +40,341 @@ const langHref = (loc) => (isHome || currentSlug === 'accueil' ? `/${loc}/` : `/
     />
   </head>
   <body>
-    <header class="site-header">
-      <div class="bar">
-        <a class="wordmark" href={`/${lang}/`}>{siteName}</a>
-        <nav class="nav" aria-label="Navigation principale">
-          {navPages.map((p) => (
-            <a href={pageHref(p.slug)} class={p.slug === currentSlug ? 'on' : ''}>{p.title}</a>
-          ))}
+    <!-- Barre mobile (masquée sur desktop) -->
+    <div class="topbar">
+      <a class="wordmark" href={`/${lang}/`}>{siteName}</a>
+      <button class="burger" type="button" aria-label="Menu" aria-expanded="false" data-nav-toggle>
+        <span></span><span></span>
+      </button>
+    </div>
+
+    <div class="shell">
+      <!-- Rail-index : navigation latérale façon catalogue -->
+      <aside class="rail" id="rail">
+        <a class="wordmark rail-mark" href={`/${lang}/`}>{siteName}</a>
+
+        <nav class="pages" aria-label="Navigation principale">
+          <ol>
+            {navPages.map((p, i) => (
+              <li>
+                <a href={pageHref(p.slug)} class={p.slug === currentSlug ? 'on' : ''}>
+                  <span class="folio">{fmtFolio(i + 1)}</span>
+                  <span class="label">{p.title}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
         </nav>
-        <div class="langs" aria-label="Langues">
-          {LANGS.map((loc) => (
-            <a href={langHref(loc)} class={loc === lang ? 'on' : ''} hreflang={loc}>{loc.toUpperCase()}</a>
-          ))}
+
+        {toc.length > 0 && (
+          <nav class="toc" aria-label="Sommaire">
+            <p class="toc-title">Sommaire</p>
+            <ol>
+              {toc.map((t) => (
+                <li>
+                  <a href={`#${t.id}`} data-toc={t.id}>
+                    <span class="folio">{fmtFolio(t.folio)}</span>
+                    <span class="label">{t.title}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+
+        <div class="rail-foot">
+          <div class="langs" aria-label="Langues">
+            {LANGS.map((loc) => (
+              <a href={langHref(loc)} class={loc === lang ? 'on' : ''} hreflang={loc}>{loc.toUpperCase()}</a>
+            ))}
+          </div>
+          {contactEmail && <a class="rail-mail" href={`mailto:${contactEmail}`}>{contactEmail}</a>}
         </div>
-      </div>
-    </header>
+      </aside>
 
-    <main class="site-main">
-      <slot />
-    </main>
+      <button class="scrim" type="button" aria-hidden="true" tabindex="-1" data-nav-close></button>
 
-    <footer class="site-footer">
-      <div class="inner">
-        <span class="fw">{siteName}</span>
-        <nav class="fnav" aria-label="Pied de page">
-          {navPages.map((p) => (<a href={pageHref(p.slug)}>{p.title}</a>))}
-        </nav>
-        {contactEmail && <a class="mail" href={`mailto:${contactEmail}`}>{contactEmail}</a>}
-        <p class="legal">© {new Date().getFullYear()} {siteName} · Maison intellectuelle</p>
+      <div class="content-col">
+        <main class="site-main">
+          <slot />
+        </main>
+
+        <footer class="site-footer">
+          <div class="inner">
+            <span class="fw">{siteName}</span>
+            <nav class="fnav" aria-label="Pied de page">
+              {navPages.map((p) => (<a href={pageHref(p.slug)}>{p.title}</a>))}
+            </nav>
+            {contactEmail && <a class="mail" href={`mailto:${contactEmail}`}>{contactEmail}</a>}
+            <p class="legal">© {new Date().getFullYear()} {siteName} · Maison intellectuelle</p>
+          </div>
+        </footer>
       </div>
-    </footer>
+    </div>
+
+    <script>
+      // Menu mobile (off-canvas)
+      const body = document.body
+      const setNav = (open) => {
+        body.classList.toggle('nav-open', open)
+        document.querySelector('[data-nav-toggle]')?.setAttribute('aria-expanded', String(open))
+      }
+      document.querySelector('[data-nav-toggle]')?.addEventListener('click', () =>
+        setNav(!body.classList.contains('nav-open')),
+      )
+      document.querySelector('[data-nav-close]')?.addEventListener('click', () => setNav(false))
+      document.querySelectorAll('.rail a').forEach((a) => a.addEventListener('click', () => setNav(false)))
+
+      // Sommaire vivant : surligne la section visible
+      const tocLinks = new Map()
+      document.querySelectorAll('[data-toc]').forEach((a) => tocLinks.set(a.dataset.toc, a))
+      const sections = document.querySelectorAll('[data-section]')
+      if (sections.length && 'IntersectionObserver' in window) {
+        const spy = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                tocLinks.forEach((l) => l.classList.remove('on'))
+                tocLinks.get(e.target.id)?.classList.add('on')
+              }
+            })
+          },
+          { rootMargin: '-30% 0px -60% 0px' },
+        )
+        sections.forEach((s) => spy.observe(s))
+      }
+
+      // Apparition au scroll (désactivée si l'utilisateur réduit les animations)
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!reduce && 'IntersectionObserver' in window) {
+        document.documentElement.classList.add('reveal-ready')
+        const io = new IntersectionObserver(
+          (entries, obs) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                e.target.classList.add('is-in')
+                obs.unobserve(e.target)
+              }
+            })
+          },
+          { rootMargin: '0px 0px -10% 0px' },
+        )
+        document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el))
+      }
+    </script>
+
+    <style is:global>
+      /* ---- Structure : rail-index + colonne de contenu ---- */
+      .shell {
+        display: grid;
+        grid-template-columns: var(--rail-w) minmax(0, 1fr);
+        min-block-size: 100vh;
+      }
+      .wordmark {
+        font-family: var(--ff-display);
+        font-size: 1.55rem;
+        letter-spacing: 0.08em;
+        text-decoration: none;
+        color: var(--c-charcoal);
+      }
+
+      .rail {
+        position: sticky;
+        inset-block-start: 0;
+        block-size: 100vh;
+        overflow-y: auto;
+        padding: clamp(1.5rem, 2vw, 2.4rem);
+        border-inline-end: 1px solid var(--c-brass);
+        display: flex;
+        flex-direction: column;
+        gap: clamp(1.5rem, 4vh, 3rem);
+        background: var(--c-ivory);
+      }
+      .rail-mark { display: block; }
+
+      .rail nav ol {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+      }
+      .rail nav a {
+        display: grid;
+        grid-template-columns: 1.8rem 1fr;
+        gap: 0.6rem;
+        align-items: baseline;
+        text-decoration: none;
+        color: var(--c-charcoal-soft);
+        padding-block: 0.45rem;
+        transition: color 250ms ease;
+      }
+      .rail nav a .folio {
+        font-size: 0.72rem;
+        letter-spacing: 0.1em;
+        color: var(--c-brass);
+        font-variant-numeric: tabular-nums;
+      }
+      .rail .pages a .label {
+        font-family: var(--ff-display);
+        font-size: 1.35rem;
+        line-height: 1.05;
+      }
+      .rail nav a.on { color: var(--c-charcoal); }
+      .rail nav a:hover { color: var(--c-charcoal); }
+      .rail .pages a.on .label { position: relative; }
+      .rail .pages a.on .label::after {
+        content: '';
+        position: absolute;
+        inset-inline-start: 0;
+        inset-block-end: -3px;
+        inline-size: 1.4rem;
+        block-size: 1px;
+        background: var(--c-brass);
+      }
+
+      .toc { border-block-start: 1px solid var(--c-stone); padding-block-start: 1.2rem; }
+      .toc-title {
+        text-transform: uppercase;
+        letter-spacing: 0.22em;
+        font-size: 0.68rem;
+        color: var(--c-charcoal-soft);
+        margin: 0 0 0.6rem;
+      }
+      .toc a .label { font-size: var(--fs-small); }
+      .toc a.on { color: var(--c-brass); }
+      .toc a.on .folio { color: var(--c-charcoal); }
+
+      .rail-foot { margin-block-start: auto; display: flex; flex-direction: column; gap: 0.7rem; }
+      .langs { display: flex; gap: 0.7rem; font-size: var(--fs-small); letter-spacing: 0.08em; }
+      .langs a { text-decoration: none; color: var(--c-charcoal-soft); }
+      .langs a.on { color: var(--c-brass); font-weight: 500; }
+      .rail-mail { font-size: var(--fs-small); color: var(--c-charcoal-soft); text-decoration: none; }
+
+      /* ---- Contenu ---- */
+      .content-col { min-inline-size: 0; }
+      .site-main {
+        max-inline-size: var(--w-content);
+        padding-inline: clamp(1.5rem, 5vw, 5rem);
+        padding-block: clamp(2.5rem, 7vh, 6rem);
+      }
+
+      /* Grille de section : folio (marge) | lecture | note (marginalia) */
+      .section {
+        display: grid;
+        grid-template-columns: [folio] var(--folio-w) [main] minmax(0, var(--w-prose)) [note] 1fr;
+        column-gap: var(--gutter);
+        align-items: start;
+        margin-block: clamp(2.5rem, 6vw, 5rem);
+      }
+      .section > .folio {
+        grid-column: folio;
+        font-family: var(--ff-display);
+        font-size: 1.6rem;
+        color: var(--c-brass);
+        font-variant-numeric: tabular-nums;
+        padding-block-start: 0.2rem;
+      }
+      .section > .main { grid-column: main; min-inline-size: 0; }
+      .section > .main h2 { font-size: var(--fs-h2); margin-block-end: 0.7em; }
+      .section > .note {
+        grid-column: note;
+        font-size: var(--fs-small);
+        line-height: 1.6;
+        color: var(--c-charcoal-soft);
+        border-inline-start: 1px solid var(--c-brass);
+        padding-inline-start: 1rem;
+        max-inline-size: 22ch;
+      }
+
+      .prose p { margin-block: 0 1.2em; max-inline-size: var(--w-prose); }
+      .prose blockquote {
+        margin-inline: 0;
+        padding-inline-start: 1.2rem;
+        border-inline-start: 2px solid var(--c-brass);
+        font-family: var(--ff-display);
+        font-size: var(--fs-h3);
+        color: var(--c-charcoal-soft);
+      }
+
+      /* ---- Apparition au scroll (opt-in via .reveal-ready, sinon visible) ---- */
+      html.reveal-ready [data-reveal] {
+        opacity: 0;
+        transform: translateY(var(--reveal-shift));
+        transition: opacity 600ms ease, transform 600ms ease;
+      }
+      html.reveal-ready [data-reveal].is-in { opacity: 1; transform: none; }
+
+      /* ---- Pied de page ---- */
+      .site-footer { margin-block-start: clamp(4rem, 10vw, 9rem); background: var(--c-petrol-deep); color: var(--c-ivory); }
+      .site-footer .inner {
+        max-inline-size: var(--w-content);
+        padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 5vw, 5rem);
+        display: flex; flex-direction: column; gap: 0.9rem;
+      }
+      .site-footer .fw { font-family: var(--ff-display); font-size: 1.4rem; letter-spacing: 0.06em; }
+      .site-footer .fnav { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+      .site-footer a { color: var(--c-brass-soft); text-decoration: none; font-size: var(--fs-small); }
+      .site-footer a:hover { color: var(--c-ivory); }
+      .site-footer .legal { margin: 0; font-size: var(--fs-small); color: #9a958a; }
+
+      /* ---- Barre mobile + off-canvas ---- */
+      .topbar { display: none; }
+      .scrim { display: none; }
+
+      @media (max-width: 900px) {
+        .shell { grid-template-columns: 1fr; }
+        .topbar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0.9rem var(--space);
+          border-block-end: 1px solid var(--c-brass);
+          position: sticky;
+          inset-block-start: 0;
+          background: var(--c-ivory);
+          z-index: 30;
+        }
+        .burger {
+          inline-size: 2.2rem; block-size: 2.2rem;
+          background: none; border: none; cursor: pointer;
+          display: grid; align-content: center; gap: 5px; padding: 0;
+        }
+        .burger span { display: block; block-size: 1px; background: var(--c-charcoal); }
+        .rail {
+          position: fixed;
+          inset-block: 0;
+          inset-inline-start: 0;
+          inline-size: min(82vw, 22rem);
+          z-index: 40;
+          transform: translateX(-100%);
+          transition: transform 360ms ease;
+          border-inline-end: 1px solid var(--c-brass);
+        }
+        [dir='rtl'] .rail { transform: translateX(100%); }
+        body.nav-open .rail { transform: none; }
+        body.nav-open .scrim {
+          display: block;
+          position: fixed; inset: 0;
+          background: rgba(15, 38, 44, 0.4);
+          border: none; z-index: 35;
+        }
+        .section {
+          grid-template-columns: 1fr;
+          row-gap: 0.6rem;
+        }
+        .section > .folio { grid-column: 1; }
+        .section > .main { grid-column: 1; }
+        .section > .note {
+          grid-column: 1;
+          border-inline-start: none;
+          border-block-start: 1px solid var(--c-brass);
+          padding-inline-start: 0;
+          padding-block-start: 0.8rem;
+          max-inline-size: none;
+        }
+      }
+    </style>
   </body>
 </html>
-
-<style is:global>
-  .site-header {
-    border-block-end: 1px solid var(--c-brass);
-    background: var(--c-ivory);
-  }
-  .site-header .bar {
-    max-inline-size: var(--w-content);
-    margin-inline: auto;
-    padding: 1.1rem var(--space);
-    display: flex;
-    align-items: baseline;
-    gap: 2rem;
-  }
-  .wordmark {
-    font-family: var(--ff-display);
-    font-size: 1.6rem;
-    letter-spacing: 0.06em;
-    text-decoration: none;
-    color: var(--c-charcoal);
-  }
-  .nav {
-    display: flex;
-    gap: 1.5rem;
-    margin-inline-end: auto;
-    flex-wrap: wrap;
-  }
-  .nav a {
-    text-decoration: none;
-    color: var(--c-charcoal-soft);
-    font-size: var(--fs-small);
-    letter-spacing: 0.04em;
-    padding-block-end: 2px;
-    border-block-end: 1px solid transparent;
-  }
-  .nav a.on,
-  .nav a:hover {
-    color: var(--c-charcoal);
-    border-block-end-color: var(--c-brass);
-  }
-  .langs {
-    display: flex;
-    gap: 0.75rem;
-    font-size: var(--fs-small);
-    letter-spacing: 0.08em;
-  }
-  .langs a {
-    text-decoration: none;
-    color: var(--c-charcoal-soft);
-  }
-  .langs a.on {
-    color: var(--c-brass);
-    font-weight: 500;
-  }
-
-  .site-main {
-    max-inline-size: var(--w-content);
-    margin-inline: auto;
-    padding-inline: var(--space);
-    padding-block: clamp(2.5rem, 8vh, 6rem);
-  }
-
-  .prose {
-    max-inline-size: var(--w-prose);
-  }
-  .prose p {
-    margin-block: 0 1.2em;
-  }
-  .prose blockquote {
-    margin-inline: 0;
-    padding-inline-start: 1.2rem;
-    border-inline-start: 2px solid var(--c-brass);
-    font-family: var(--ff-display);
-    font-size: var(--fs-h3);
-    color: var(--c-charcoal-soft);
-  }
-
-  .site-footer {
-    margin-block-start: clamp(4rem, 10vw, 9rem);
-    background: var(--c-petrol-deep);
-    color: var(--c-ivory);
-  }
-  .site-footer .inner {
-    max-inline-size: var(--w-content);
-    margin-inline: auto;
-    padding: clamp(2.5rem, 6vw, 4rem) var(--space);
-    display: flex;
-    flex-direction: column;
-    gap: 0.9rem;
-  }
-  .site-footer .fw {
-    font-family: var(--ff-display);
-    font-size: 1.4rem;
-    letter-spacing: 0.06em;
-  }
-  .site-footer .fnav {
-    display: flex;
-    gap: 1.25rem;
-    flex-wrap: wrap;
-  }
-  .site-footer a {
-    color: var(--c-brass-soft);
-    text-decoration: none;
-    font-size: var(--fs-small);
-  }
-  .site-footer a:hover {
-    color: var(--c-ivory);
-  }
-  .site-footer .legal {
-    margin: 0;
-    font-size: var(--fs-small);
-    color: var(--c-charcoal-soft);
-    color: #9a958a;
-  }
-</style>

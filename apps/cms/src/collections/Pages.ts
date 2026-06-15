@@ -1,8 +1,9 @@
 import type { CollectionConfig } from 'payload'
+import { pageBlocks } from '../blocks'
 
-// Collection minimale de pages éditoriales, localisée (FR/ES/EN/DE).
-// Lecture publique → consommée par le front Astro (SSG) au build.
-// Le modèle de contenu complet (blocs, SEO…) arrive en FEAT-004.
+// Pages éditoriales localisées (FR/ES/EN/DE), lecture publique → front Astro (SSG).
+// Contenu = page-builder à blocs (`layout`, FEAT-004). Les champs `excerpt`/`content`
+// restent comme repli pour les pages sans blocs (compat seed FEAT-003).
 export const Pages: CollectionConfig = {
   slug: 'pages',
   labels: {
@@ -36,17 +37,29 @@ export const Pages: CollectionConfig = {
       },
     },
     {
+      name: 'layout',
+      type: 'blocks',
+      blocks: pageBlocks,
+      localized: true,
+      admin: {
+        description: 'Composition de la page par blocs (en-tête, texte, citation, index, signature, appel à l’action).',
+      },
+    },
+    {
       name: 'excerpt',
       type: 'textarea',
       localized: true,
       admin: {
-        description: 'Chapô / résumé court affiché en tête de page.',
+        description: 'Chapô / résumé court (repli si la page n’a pas de blocs).',
       },
     },
     {
       name: 'content',
       type: 'richText',
       localized: true,
+      admin: {
+        description: 'Contenu de repli (utilisé seulement si « layout » est vide).',
+      },
     },
     {
       name: 'showInNav',

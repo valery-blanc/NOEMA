@@ -1,0 +1,25 @@
+---
+import { folioFor } from '../lib/toc.js'
+import Hero from './Hero.astro'
+import Prose from './Prose.astro'
+import PullQuote from './PullQuote.astro'
+import IndexList from './IndexList.astro'
+import Signature from './Signature.astro'
+import Cta from './Cta.astro'
+
+const { blocks = [], lang = 'fr' } = Astro.props
+
+const MAP = {
+  hero: Hero,
+  prose: Prose,
+  pullquote: PullQuote,
+  indexList: IndexList,
+  signature: Signature,
+  cta: Cta,
+}
+---
+{blocks.map((block, i) => {
+  const Comp = MAP[block.blockType]
+  if (!Comp) return null
+  return <Comp block={block} lang={lang} id={`section-${i}`} folio={folioFor(blocks, i)} />
+})}

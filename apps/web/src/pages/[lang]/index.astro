@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro'
+import BlockList from '../../blocks/BlockList.astro'
 import { getSiteSettings, getNavPages, getPageBySlug } from '../../lib/payload.js'
 import { lexicalToHtml } from '../../lib/lexical.js'
 
@@ -21,52 +22,28 @@ try {
   cmsError = e instanceof Error ? e.message : String(e)
 }
 
-const tagline = settings?.tagline ?? ''
 const siteName = settings?.siteName ?? 'NOÊMA'
-const contentHtml = page?.content ? lexicalToHtml(page.content) : ''
+const blocks = page?.layout ?? []
+const fallbackHtml = page?.content ? lexicalToHtml(page.content) : ''
 ---
-<Base lang={lang} isHome={true} currentSlug="accueil" title={siteName} settings={settings} navPages={navPages}>
-  <section class="hero">
-    <h1>{siteName}</h1>
-    {tagline && <p class="tagline">{tagline}</p>}
-  </section>
-
-  {page && (
+<Base lang={lang} isHome={true} currentSlug="accueil" title={siteName} settings={settings} navPages={navPages} page={page}>
+  {blocks.length > 0 ? (
+    <BlockList blocks={blocks} lang={lang} />
+  ) : (
     <article class="prose">
-      <h2>{page.title}</h2>
-      {page.excerpt && <p class="lead">{page.excerpt}</p>}
-      <Fragment set:html={contentHtml} />
+      <h1>{page?.title ?? siteName}</h1>
+      {page?.excerpt && <p class="lead">{page.excerpt}</p>}
+      <Fragment set:html={fallbackHtml} />
+      {cmsError && <p class="status">CMS injoignable : {cmsError}</p>}
     </article>
   )}
-
-  <p class="status">
-    {cmsError ? `CMS injoignable : ${cmsError}` : 'Chaîne CMS → API → front : OK'}
-  </p>
 </Base>
 
 <style>
-  .hero {
-    margin-block-end: clamp(2rem, 8vh, 5rem);
-  }
-  .hero h1 {
-    font-size: var(--fs-display);
-    letter-spacing: 0.01em;
-    margin: 0;
-  }
-  .tagline {
-    font-family: var(--ff-display);
-    font-size: var(--fs-h3);
-    color: var(--c-charcoal-soft);
-    margin-block-start: 0.5rem;
-  }
   .lead {
     font-family: var(--ff-display);
     font-size: var(--fs-h3);
     color: var(--c-charcoal-soft);
   }
-  .status {
-    margin-block-start: 3rem;
-    font-size: var(--fs-small);
-    color: var(--c-petrol);
-  }
+  .status { margin-block-start: 2rem; font-size: var(--fs-small); color: #9b3b2f; }
 </style>

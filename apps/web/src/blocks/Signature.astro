@@ -1,0 +1,75 @@
+---
+import { fmtFolio } from '../lib/toc.js'
+
+const { block, id, folio } = Astro.props
+const portraitUrl = block.portrait?.url || null
+---
+<section class="section" id={id} data-section={folio ? id : undefined} data-reveal>
+  <div class="folio" aria-hidden="true">{fmtFolio(folio)}</div>
+  <div class="main signature">
+    <figure class="portrait">
+      {portraitUrl
+        ? <img src={portraitUrl} alt={block.portrait?.alt ?? block.name ?? ''} />
+        : <div class="portrait-ph" aria-hidden="true">photo</div>}
+    </figure>
+    <div class="bio">
+      {block.sectionTitle && <h2>{block.sectionTitle}</h2>}
+      {block.name && <p class="name">{block.name}</p>}
+      {block.role && <p class="role">{block.role}</p>}
+      {block.bio && <p class="text">{block.bio}</p>}
+    </div>
+  </div>
+</section>
+
+<style>
+  .signature {
+    display: grid;
+    grid-template-columns: minmax(8rem, 14rem) 1fr;
+    column-gap: var(--gutter);
+    align-items: start;
+  }
+  .portrait {
+    margin: 0;
+  }
+  .portrait img,
+  .portrait-ph {
+    inline-size: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+  .portrait-ph {
+    display: grid;
+    place-items: center;
+    background: var(--c-stone);
+    color: var(--c-charcoal-soft);
+    font-family: var(--ff-display);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-size: var(--fs-small);
+  }
+  .bio .name {
+    font-family: var(--ff-display);
+    font-size: var(--fs-h3);
+    margin: 0;
+  }
+  .bio .role {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: var(--fs-small);
+    color: var(--c-brass);
+    margin: 0.2rem 0 1rem;
+  }
+  .bio .text {
+    max-inline-size: var(--w-prose);
+    color: var(--c-charcoal-soft);
+  }
+  @media (max-width: 640px) {
+    .signature {
+      grid-template-columns: 1fr;
+      row-gap: var(--gutter);
+    }
+    .portrait {
+      max-inline-size: 12rem;
+    }
+  }
+</style>

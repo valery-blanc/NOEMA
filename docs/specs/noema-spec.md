@@ -104,11 +104,13 @@ Pages publiques (ordre du menu) :
 4. **À propos** — la fondatrice : parcours, recherche, international, bibliothèques.
 5. **Contact** — prise de contact (formulaire + coordonnées).
 
-**Navigation** :
-- Barre supérieure minimale : wordmark **NOÊMA** + 5 liens + **sélecteur de langue** (FR/ES/EN/DE).
-- Transparente au-dessus du hero, devient surface opaque (ivoire) au scroll. Filet laiton fin en séparateur.
-- Mobile : menu plein écran sobre (overlay ivoire, liens en grande serif).
+**Navigation** (implémentée FEAT-004 — parti pris « rail-index ») :
+- **Rail vertical fixe** (bord inline-start) façon catalogue de bibliothèque : wordmark **NOÊMA**,
+  liens **numérotés (folios `01 — Philosophie`)**, **sommaire vivant** de la page (surligné au
+  scroll), **sélecteur de langue** (FR/ES/EN/DE) en bas. Filet laiton en séparateur.
+- Mobile : off-canvas plein écran (burger + scrim, liens en grande serif).
 - Pied de page : wordmark, liens, langue, mentions, contact, fine ligne laiton.
+- *(Évolution charte avec Claude Design : transparence au-dessus du hero, etc.)*
 
 Le menu reste volontairement court ; la fondatrice peut créer des **pages additionnelles**
 (slug libre) via le CMS — affichées en page autonome, et optionnellement ajoutées au menu
@@ -194,20 +196,21 @@ langues** dont l'**arabe (RTL)**.
 ## 7. Modèle de contenu (Payload)
 
 ### Collections
-- **Pages** (localisée) : `title`, `slug`, `seo`, `showInNav` (bool), `navOrder`, `layout`
-  (page-builder = liste de **blocs**). Permet à la fondatrice de **créer/modifier des pages**.
-- **Services** (localisée) : `title`, `summary`, `body`, `image`, `order`.
-- **Media** : uploads (image/doc), `alt` (localisé), formats responsive générés.
-- **Users** : authentification admin (fondatrice + Val), rôles.
+- **Pages** : `title` (localisé), `slug`, `showInNav` (bool), `navOrder`, **`layout`**
+  (page-builder = liste de **blocs**, **localisé** → un jeu de blocs par langue, FEAT-004),
+  `excerpt`/`content` (repli). Permet à la fondatrice de **créer/modifier des pages**.
+- **Media** : uploads (image/doc), `alt`, formats responsive générés.
+- **Users** : authentification admin (fondatrice + Val).
 
 ### Globals
-- **SiteSettings** (localisé) : nom de marque, accroche, items de navigation, contenu du
-  footer, coordonnées de contact, liens sociaux, SEO par défaut, configuration langues.
+- **SiteSettings** (localisé) : `siteName`, `tagline`, `contactEmail` (étendra : nav, footer,
+  liens sociaux, SEO par défaut).
 
-### Blocs du page-builder (réutilisables)
-`Hero` · `RichText` (prose) · `FounderSignature` (photo + bio + signature — présence
-fondatrice) · `ServicesGrid` · `PullQuote` (citation éditoriale) · `ImageOrGallery` ·
-`CallToAction` · `ContactBlock` (formulaire + coordonnées).
+### Blocs du page-builder (implémentés FEAT-004)
+`hero` · `prose` (richText + **note de marge/marginalia** + titre de section) · `pullquote`
+(citation) · `indexList` (titre + entrées label/texte — piliers/index) · `signature`
+(présence fondatrice : nom/rôle/bio/portrait) · `cta` (bande pétrole — accent rare).
+*À venir : ImageOrGallery, ContactBlock (formulaire), SEO par bloc.*
 
 ---
 
@@ -297,6 +300,11 @@ seules les variables d'environnement et le domaine changent.
 - **FEAT-001** (2026-06-15) — Fondations : choix de stack, architecture, navigation, design
   system (palette, typo, rythme), i18n/RTL, modèle de contenu. Registre visuel « chaleur
   éditoriale » validé (sites de référence observés ; pétrole en accent rare). Conception validée.
+- **FEAT-004** (2026-06-15) — Page-builder à blocs (hero/prose+note/pullquote/indexList/
+  signature/cta), `layout` localisé. Front : **navigation « rail-index »** (folios numérotés,
+  catalogue vertical), **affichage « marginalia + folios »**, **sommaire vivant** (scroll-spy),
+  apparition au scroll (reduced-motion safe). Charte (couleurs/polices) laissée en tokens
+  (faite en parallèle avec Claude Design). DB réinitialisée (lorem) → migration `initial` unique.
 - **FEAT-005** (2026-06-15) — Workflow éditorial statique : boutons **Aperçu** / **Publier**
   dans l'admin. Service `publisher` (rebuild Astro à la demande, cibles public + preview),
   service `preview` (nginx, basic-auth Traefik + noindex). Endpoints `/api/preview|publish`

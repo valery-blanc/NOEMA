@@ -26,6 +26,12 @@
   --w-content: 72rem;
   --w-prose: 42rem;
   --space: 1.5rem;
+
+  /* Structure de mise en page (FEAT-004) — indépendant de la charte (couleurs/polices) */
+  --rail-w: 16rem;        /* largeur du rail-index (navigation latérale) */
+  --folio-w: 3.5rem;      /* colonne des folios (numéros de section en marge) */
+  --gutter: clamp(1.25rem, 3vw, 3rem);
+  --reveal-shift: 14px;   /* translation des éléments à l'apparition */
 }
 
 *, *::before, *::after { box-sizing: border-box; }

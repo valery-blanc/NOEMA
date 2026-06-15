@@ -1,0 +1,49 @@
+---
+const { block } = Astro.props
+---
+<aside class="cta" data-reveal>
+  <div class="cta-inner">
+    <h2>{block.heading}</h2>
+    {block.text && <p>{block.text}</p>}
+    {block.buttonLabel && block.buttonHref && (
+      <a class="btn" href={block.buttonHref}>{block.buttonLabel}</a>
+    )}
+  </div>
+</aside>
+
+<style>
+  /* Pétrole = accent rare, réservé à cette bande CTA (cf. spec §5.1). */
+  .cta {
+    margin-block-start: clamp(4rem, 10vw, 8rem);
+    background: var(--c-petrol);
+    color: var(--c-ivory);
+    border-radius: 2px;
+  }
+  .cta-inner {
+    padding: clamp(2.5rem, 6vw, 4.5rem);
+    max-inline-size: var(--w-prose);
+  }
+  .cta h2 {
+    font-size: var(--fs-h1);
+    margin: 0 0 0.6em;
+  }
+  .cta p {
+    color: var(--c-sand);
+    margin: 0 0 1.8rem;
+  }
+  .btn {
+    display: inline-block;
+    text-decoration: none;
+    color: var(--c-ivory);
+    border: 1px solid var(--c-brass);
+    padding: 0.7em 1.6em;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: var(--fs-small);
+    transition: background 400ms ease, color 400ms ease;
+  }
+  .btn:hover {
+    background: var(--c-brass);
+    color: var(--c-petrol-deep);
+  }
+</style>

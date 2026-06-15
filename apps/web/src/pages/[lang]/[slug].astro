@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro'
+import BlockList from '../../blocks/BlockList.astro'
 import { getSiteSettings, getNavPages, getPageBySlug } from '../../lib/payload.js'
 import { lexicalToHtml } from '../../lib/lexical.js'
 
@@ -38,15 +39,17 @@ try {
   cmsError = e instanceof Error ? e.message : String(e)
 }
 
-const siteName = settings?.siteName ?? 'NOÊMA'
-const contentHtml = page?.content ? lexicalToHtml(page.content) : ''
+const blocks = page?.layout ?? []
+const fallbackHtml = page?.content ? lexicalToHtml(page.content) : ''
 ---
-<Base lang={lang} currentSlug={slug} title={page?.title ?? slug} settings={settings} navPages={navPages}>
-  {page ? (
+<Base lang={lang} currentSlug={slug} title={page?.title ?? slug} settings={settings} navPages={navPages} page={page}>
+  {page && blocks.length > 0 ? (
+    <BlockList blocks={blocks} lang={lang} />
+  ) : page ? (
     <article class="prose">
       <h1>{page.title}</h1>
       {page.excerpt && <p class="lead">{page.excerpt}</p>}
-      <Fragment set:html={contentHtml} />
+      <Fragment set:html={fallbackHtml} />
     </article>
   ) : (
     <p>{cmsError ? `CMS injoignable : ${cmsError}` : 'Page introuvable.'}</p>
@@ -54,10 +57,7 @@ const contentHtml = page?.content ? lexicalToHtml(page.content) : ''
 </Base>
 
 <style>
-  .prose h1 {
-    font-size: var(--fs-h1);
-    margin-block-end: 0.4em;
-  }
+  .prose h1 { font-size: var(--fs-h1); margin-block-end: 0.4em; }
   .lead {
     font-family: var(--ff-display);
     font-size: var(--fs-h3);

@@ -60,8 +60,17 @@
 - [x] Déploiement Avignon OK : public 200, admin 200, aperçu 401 sans auth / 200 avec, X-Robots-Tag noindex, TLS LE émis
 - [x] **Validé par Val (2026-06-15)** : boutons Aperçu/Publier OK, accès aperçu protégé OK
 
+### FEAT-004 — Page-builder à blocs + nav/affichage originaux
+- [x] Blocs Payload (hero, prose+note, pullquote, indexList, signature, cta) ; `layout` localisé
+- [x] Migration repartie propre (DB sans données réelles) + types + importmap
+- [x] Front : nav « rail-index » (folios) + affichage « marginalia/folios » + sommaire vivant (scroll-spy) + reveal (reduced-motion safe)
+- [x] Seed blocs labellisés [FR]/[ES]/[EN]/[DE] (mélanges variés par page)
+- [x] Build/run Tulear OK : 20 pages, blocs rendus, i18n + sommaire vérifiés
+- [~] Déploiement Avignon (reset DB lorem + migrate + seed + régénération) → en cours
+- [ ] Demander test à Val (nav, sommaire, blocs, switch langue)
+
 ## Backlog (FEAT suivants)
-- [ ] FEAT-004 — Page-builder à blocs (Hero, ServicesGrid, PullQuote, FounderSignature…) + SEO
+- [ ] FEAT-006 — Charte définitive (Claude Design) + contenu réel + SEO + formulaire contact
 - [ ] FEAT-004 — Modèle Payload (collections/globals/blocs) + seed contenu FR
 - [ ] FEAT-005 — Pages (Accueil, Philosophie, Services, À propos, Contact) + formulaire contact
 - [ ] FEAT-006 — Traductions ES/EN/DE + préparation locale arabe (RTL)

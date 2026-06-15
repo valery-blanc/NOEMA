@@ -1,0 +1,15 @@
+---
+import { fmtFolio } from '../lib/toc.js'
+import { lexicalToHtml } from '../lib/lexical.js'
+
+const { block, id, folio } = Astro.props
+const html = block.body ? lexicalToHtml(block.body) : ''
+---
+<section class="section" id={id} data-section={folio ? id : undefined} data-reveal>
+  <div class="folio" aria-hidden="true">{fmtFolio(folio)}</div>
+  <div class="main">
+    {block.sectionTitle && <h2>{block.sectionTitle}</h2>}
+    <div class="prose" set:html={html} />
+  </div>
+  {block.note && <aside class="note">{block.note}</aside>}
+</section>

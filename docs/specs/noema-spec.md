@@ -246,7 +246,9 @@ NOEMA/
   (`pnpm payload migrate`) avant le démarrage du CMS. En prod, le schéma Postgres est géré
   **exclusivement par migrations versionnées** (`apps/cms/src/migrations/`) : le `push` auto de
   l'adaptateur n'opère qu'en dev (`NODE_ENV != production`). Toute évolution du modèle ⇒
-  `payload migrate:create` + commit (cf. BUG-001).
+  `payload migrate:create` + commit (cf. BUG-001). **Toute évolution du modèle Payload**
+  (champs/collections/globals/features d'éditeur) impose en plus de régénérer + committer
+  `payload generate:types` **et** `payload generate:importmap` (sinon l'admin casse — cf. BUG-002).
 - `cms` (Payload/Next, image `output: standalone`) — dépend de postgres (healthy) **et** de
   `cms-migrate` (terminé OK) ; réseaux `internal` + `web` ; labels Traefik → `${ADMIN_HOST}`, port 3000.
 - `web-build` (one-shot) — attend le CMS, lance `astro build` (lit l'API Payload), publie le

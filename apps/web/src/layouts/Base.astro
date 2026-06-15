@@ -1,17 +1,32 @@
 ---
 import '../styles/tokens.css'
 
-const { lang = 'fr', title = 'NOÊMA' } = Astro.props
-// RTL-first : la direction est dérivée de la langue (arabe/hébreu/farsi → rtl).
+const {
+  lang = 'fr',
+  currentSlug = 'accueil',
+  isHome = false,
+  title = 'NOÊMA',
+  settings = null,
+  navPages = [],
+} = Astro.props
+
+// RTL-first : direction dérivée de la langue (arabe/hébreu/farsi → rtl).
 const RTL = ['ar', 'he', 'fa', 'ur']
 const dir = RTL.includes(lang) ? 'rtl' : 'ltr'
+
+const siteName = settings?.siteName ?? 'NOÊMA'
+const contactEmail = settings?.contactEmail ?? ''
+const LANGS = ['fr', 'es', 'en', 'de']
+
+const pageHref = (slug) => (slug === 'accueil' ? `/${lang}/` : `/${lang}/${slug}/`)
+const langHref = (loc) => (isHome || currentSlug === 'accueil' ? `/${loc}/` : `/${loc}/${currentSlug}/`)
 ---
 <!doctype html>
 <html lang={lang} dir={dir}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
+    <title>{title} — {siteName}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -20,6 +35,150 @@ const dir = RTL.includes(lang) ? 'rtl' : 'ltr'
     />
   </head>
   <body>
-    <slot />
+    <header class="site-header">
+      <div class="bar">
+        <a class="wordmark" href={`/${lang}/`}>{siteName}</a>
+        <nav class="nav" aria-label="Navigation principale">
+          {navPages.map((p) => (
+            <a href={pageHref(p.slug)} class={p.slug === currentSlug ? 'on' : ''}>{p.title}</a>
+          ))}
+        </nav>
+        <div class="langs" aria-label="Langues">
+          {LANGS.map((loc) => (
+            <a href={langHref(loc)} class={loc === lang ? 'on' : ''} hreflang={loc}>{loc.toUpperCase()}</a>
+          ))}
+        </div>
+      </div>
+    </header>
+
+    <main class="site-main">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="inner">
+        <span class="fw">{siteName}</span>
+        <nav class="fnav" aria-label="Pied de page">
+          {navPages.map((p) => (<a href={pageHref(p.slug)}>{p.title}</a>))}
+        </nav>
+        {contactEmail && <a class="mail" href={`mailto:${contactEmail}`}>{contactEmail}</a>}
+        <p class="legal">© {new Date().getFullYear()} {siteName} · Maison intellectuelle</p>
+      </div>
+    </footer>
   </body>
 </html>
+
+<style is:global>
+  .site-header {
+    border-block-end: 1px solid var(--c-brass);
+    background: var(--c-ivory);
+  }
+  .site-header .bar {
+    max-inline-size: var(--w-content);
+    margin-inline: auto;
+    padding: 1.1rem var(--space);
+    display: flex;
+    align-items: baseline;
+    gap: 2rem;
+  }
+  .wordmark {
+    font-family: var(--ff-display);
+    font-size: 1.6rem;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    color: var(--c-charcoal);
+  }
+  .nav {
+    display: flex;
+    gap: 1.5rem;
+    margin-inline-end: auto;
+    flex-wrap: wrap;
+  }
+  .nav a {
+    text-decoration: none;
+    color: var(--c-charcoal-soft);
+    font-size: var(--fs-small);
+    letter-spacing: 0.04em;
+    padding-block-end: 2px;
+    border-block-end: 1px solid transparent;
+  }
+  .nav a.on,
+  .nav a:hover {
+    color: var(--c-charcoal);
+    border-block-end-color: var(--c-brass);
+  }
+  .langs {
+    display: flex;
+    gap: 0.75rem;
+    font-size: var(--fs-small);
+    letter-spacing: 0.08em;
+  }
+  .langs a {
+    text-decoration: none;
+    color: var(--c-charcoal-soft);
+  }
+  .langs a.on {
+    color: var(--c-brass);
+    font-weight: 500;
+  }
+
+  .site-main {
+    max-inline-size: var(--w-content);
+    margin-inline: auto;
+    padding-inline: var(--space);
+    padding-block: clamp(2.5rem, 8vh, 6rem);
+  }
+
+  .prose {
+    max-inline-size: var(--w-prose);
+  }
+  .prose p {
+    margin-block: 0 1.2em;
+  }
+  .prose blockquote {
+    margin-inline: 0;
+    padding-inline-start: 1.2rem;
+    border-inline-start: 2px solid var(--c-brass);
+    font-family: var(--ff-display);
+    font-size: var(--fs-h3);
+    color: var(--c-charcoal-soft);
+  }
+
+  .site-footer {
+    margin-block-start: clamp(4rem, 10vw, 9rem);
+    background: var(--c-petrol-deep);
+    color: var(--c-ivory);
+  }
+  .site-footer .inner {
+    max-inline-size: var(--w-content);
+    margin-inline: auto;
+    padding: clamp(2.5rem, 6vw, 4rem) var(--space);
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .site-footer .fw {
+    font-family: var(--ff-display);
+    font-size: 1.4rem;
+    letter-spacing: 0.06em;
+  }
+  .site-footer .fnav {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .site-footer a {
+    color: var(--c-brass-soft);
+    text-decoration: none;
+    font-size: var(--fs-small);
+  }
+  .site-footer a:hover {
+    color: var(--c-ivory);
+  }
+  .site-footer .legal {
+    margin: 0;
+    font-size: var(--fs-small);
+    color: var(--c-charcoal-soft);
+    color: #9a958a;
+  }
+</style>

@@ -40,8 +40,17 @@
 > - Traefik Avignon : réseau externe **`web`**, entrypoint **`websecure`**, certresolver **`letsencrypt`** (paramétré via `.env`).
 > - Versions épinglées : Payload **3.85.1**, Next **16.2.6**, Astro **6.4.7**, Postgres **16-alpine**.
 
+### FEAT-003 — Pages affichées : nav, routage, layout + seed multilingue
+- [x] Étendre `Pages` (`showInNav`, `navOrder`) + migration Postgres (`add_nav_fields`) + régénérer `payload-types.ts`
+- [x] Seed `apps/cms/src/seed.ts` (SiteSettings + 5 pages, lorem labellisé fr/es/en/de)
+- [x] Web : `lib/payload` (nav/page), `lib/lexical` (richtext→HTML)
+- [x] Web : `Base.astro` header/footer + design system, `[lang]/index`, `[lang]/[slug]`
+- [x] Build/run Tulear OK : 21 pages, nav + switch de langue vérifiés ([FR]/[ES]/[EN]/[DE])
+- [~] Déploiement Avignon : migrate + seed + régénération SSG → en cours
+- [ ] Demander test à Val (toutes les pages, switch de langue)
+
 ## Backlog (FEAT suivants)
-- [ ] FEAT-003 — Design system implémenté (tokens, polices, layout, RTL) + composants/blocs
+- [ ] FEAT-004 — Page-builder à blocs (Hero, ServicesGrid, PullQuote, FounderSignature…) + SEO
 - [ ] FEAT-004 — Modèle Payload (collections/globals/blocs) + seed contenu FR
 - [ ] FEAT-005 — Pages (Accueil, Philosophie, Services, À propos, Contact) + formulaire contact
 - [ ] FEAT-006 — Traductions ES/EN/DE + préparation locale arabe (RTL)

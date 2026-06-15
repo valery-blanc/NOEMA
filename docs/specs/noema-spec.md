@@ -290,6 +290,11 @@ seules les variables d'environnement et le domaine changent.
 - **FEAT-001** (2026-06-15) — Fondations : choix de stack, architecture, navigation, design
   system (palette, typo, rythme), i18n/RTL, modèle de contenu. Registre visuel « chaleur
   éditoriale » validé (sites de référence observés ; pétrole en accent rare). Conception validée.
+- **FEAT-003** (2026-06-15) — Pages affichées : navigation (header wordmark + menu + sélecteur
+  de langue, footer), routage `/[lang]/` (accueil) + `/[lang]/[slug]/` (pages de menu), layout
+  au design system, sérialiseur richText→HTML minimal. Modèle `Pages` étendu (`showInNav`,
+  `navOrder`). Seed de démonstration multilingue (lorem labellisé `[FR]/[ES]/[EN]/[DE]`).
+  Page-builder à blocs reporté à FEAT-004.
 - **FEAT-002** (2026-06-15) — Scaffold du monorepo (Tulear) : `apps/cms` (Payload 3.85.1 +
   Postgres, collection `Pages` + global `SiteSettings`, locales fr/es/en/de), `apps/web`
   (Astro 6 SSG, i18n /fr /es /en /de, tokens du design system), orchestration Docker Compose

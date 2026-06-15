@@ -13,6 +13,7 @@
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
+    "seed": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed.ts",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
   },
   "dependencies": {
@@ -36,6 +37,7 @@
     "eslint": "^9.16.0",
     "eslint-config-next": "16.2.6",
     "prettier": "^3.4.2",
+    "tsx": "4.21.0",
     "typescript": "5.7.3"
   },
   "engines": {

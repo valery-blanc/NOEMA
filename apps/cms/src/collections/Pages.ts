@@ -46,5 +46,23 @@ export const Pages: CollectionConfig = {
       type: 'richText',
       localized: true,
     },
+    {
+      name: 'showInNav',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        description: 'Afficher cette page dans le menu de navigation.',
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'navOrder',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        description: 'Ordre dans le menu (croissant).',
+        position: 'sidebar',
+      },
+    },
   ],
 }

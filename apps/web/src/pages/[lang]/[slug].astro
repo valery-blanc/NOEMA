@@ -1,0 +1,67 @@
+---
+import Base from '../../layouts/Base.astro'
+import { getSiteSettings, getNavPages, getPageBySlug } from '../../lib/payload.js'
+import { lexicalToHtml } from '../../lib/lexical.js'
+
+export async function getStaticPaths() {
+  // Slugs depuis les pages du menu (slug commun à toutes les langues), hors « accueil » (= home).
+  const LANGS = ['fr', 'es', 'en', 'de']
+  let slugs = []
+  try {
+    const pages = await getNavPages('fr')
+    slugs = pages
+      .map((p) => p.slug)
+      .filter((s) => s && s !== 'accueil' && /^[a-z0-9-]+$/.test(s))
+  } catch {
+    slugs = []
+  }
+  const paths = []
+  for (const lang of LANGS) {
+    for (const slug of slugs) {
+      paths.push({ params: { lang, slug } })
+    }
+  }
+  return paths
+}
+
+const { lang, slug } = Astro.params
+
+let settings = null
+let navPages = []
+let page = null
+let cmsError = null
+try {
+  settings = await getSiteSettings(lang)
+  navPages = await getNavPages(lang)
+  page = await getPageBySlug(slug, lang)
+} catch (e) {
+  cmsError = e instanceof Error ? e.message : String(e)
+}
+
+const siteName = settings?.siteName ?? 'NOÊMA'
+const contentHtml = page?.content ? lexicalToHtml(page.content) : ''
+---
+<Base lang={lang} currentSlug={slug} title={page?.title ?? slug} settings={settings} navPages={navPages}>
+  {page ? (
+    <article class="prose">
+      <h1>{page.title}</h1>
+      {page.excerpt && <p class="lead">{page.excerpt}</p>}
+      <Fragment set:html={contentHtml} />
+    </article>
+  ) : (
+    <p>{cmsError ? `CMS injoignable : ${cmsError}` : 'Page introuvable.'}</p>
+  )}
+</Base>
+
+<style>
+  .prose h1 {
+    font-size: var(--fs-h1);
+    margin-block-end: 0.4em;
+  }
+  .lead {
+    font-family: var(--ff-display);
+    font-size: var(--fs-h3);
+    color: var(--c-charcoal-soft);
+    margin-block-end: 1.5rem;
+  }
+</style>

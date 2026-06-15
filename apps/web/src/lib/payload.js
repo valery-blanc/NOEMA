@@ -12,7 +12,15 @@ export function getSiteSettings(locale) {
   return getJSON(`/api/globals/site-settings?locale=${locale}&depth=0`)
 }
 
-export async function getPage(slug, locale) {
+// Pages du menu (showInNav), triées par navOrder croissant.
+export async function getNavPages(locale) {
+  const data = await getJSON(
+    `/api/pages?where[showInNav][equals]=true&sort=navOrder&locale=${locale}&depth=0&limit=100`,
+  )
+  return data.docs ?? []
+}
+
+export async function getPageBySlug(slug, locale) {
   const data = await getJSON(
     `/api/pages?where[slug][equals]=${encodeURIComponent(slug)}&locale=${locale}&depth=1&limit=1`,
   )

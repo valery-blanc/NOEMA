@@ -9,14 +9,19 @@ services:
   cms:
     environment:
       PAYLOAD_PUBLIC_SERVER_URL: http://localhost:3000
+      PREVIEW_SITE_URL: http://localhost:8081
     ports:
       - '3000:3000'
 
-  web-build:
+  publisher:
     environment:
-      CMS_INTERNAL_URL: http://cms:3000
       PUBLIC_SITE_URL: http://localhost:8080
+      PREVIEW_SITE_URL: http://localhost:8081
 
   web:
     ports:
       - '8080:80'
+
+  preview:
+    ports:
+      - '8081:80'

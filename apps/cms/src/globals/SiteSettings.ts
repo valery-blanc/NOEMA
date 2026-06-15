@@ -5,6 +5,7 @@ import type { GlobalConfig } from 'payload'
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
   label: { fr: 'Réglages du site', en: 'Site settings', es: 'Ajustes', de: 'Einstellungen' },
+  lockDocuments: false,
   access: {
     read: () => true,
   },

@@ -49,6 +49,16 @@
 - [x] Déploiement Avignon : migrate (`add_nav_fields`) + seed + régénération SSG — OK, 20 pages (4 langues × 5) en HTTP 200
 - [~] Test/validation Val sur Avignon (toutes les pages, switch de langue) → en attente
 
+### FEAT-005 — Boutons Aperçu / Publier + site d'aperçu protégé
+- [x] Désactiver le verrouillage de documents (`lockDocuments:false`) → « Edit » bloqué supprimé
+- [x] Endpoints CMS `/api/preview` & `/api/publish` (réservés admin) + helper triggerBuild
+- [x] Boutons admin `AdminActions.tsx` + régénération importMap
+- [x] Service `publisher` (build à la demande, 2 cibles) + service `preview` (nginx) + volume web_preview
+- [x] Traefik : basic-auth + noindex sur l'aperçu ; `.env(.example)` (PREVIEW_*, PUBLISH_TOKEN)
+- [x] Build/run Tulear OK : public 8080 + preview 8081 servis, triggers token/session 403 vérifiés
+- [ ] Mot de passe aperçu (Val) → déploiement Avignon + DNS noema-preview.zitoon.com
+- [ ] Demander test à Val (boutons Aperçu/Publier, accès aperçu protégé)
+
 ## Backlog (FEAT suivants)
 - [ ] FEAT-004 — Page-builder à blocs (Hero, ServicesGrid, PullQuote, FounderSignature…) + SEO
 - [ ] FEAT-004 — Modèle Payload (collections/globals/blocs) + seed contenu FR

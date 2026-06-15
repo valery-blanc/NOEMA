@@ -251,14 +251,19 @@ NOEMA/
   `payload generate:types` **et** `payload generate:importmap` (sinon l'admin casse — cf. BUG-002).
 - `cms` (Payload/Next, image `output: standalone`) — dépend de postgres (healthy) **et** de
   `cms-migrate` (terminé OK) ; réseaux `internal` + `web` ; labels Traefik → `${ADMIN_HOST}`, port 3000.
-- `web-build` (one-shot) — attend le CMS, lance `astro build` (lit l'API Payload), publie le
-  statique dans le volume `web_dist`, puis s'arrête (`restart: no`).
-- `web` (nginx 1.27-alpine) — sert `web_dist` (statique) ; dépend de `web-build`
-  (`service_completed_successfully`) ; labels Traefik → `${PUBLIC_HOST}`, port 80.
+- `publisher` (apps/web, Node — FEAT-005) — reconstruit le statique Astro **à la demande**
+  (lit l'API Payload) vers deux cibles : `web_dist` (public) et `web_preview` (aperçu). Build
+  initial des deux au démarrage ; `/health` ; déclenché par les boutons admin via `x-token`.
+  Remplace l'ancien one-shot `web-build`.
+- `web` (nginx 1.27-alpine) — sert `web_dist` (statique) ; dépend de `publisher` (healthy) ;
+  labels Traefik → `${PUBLIC_HOST}`, port 80.
+- `preview` (nginx — FEAT-005) — sert `web_preview` sur `${PREVIEW_HOST}` ; **basic-auth**
+  Traefik (`PREVIEW_BASICAUTH`) + header `X-Robots-Tag: noindex`.
 
-**Décision de rendu (actée FEAT-002)** : **SSG statique** servi par nginx — runtime web minimal
-(adapté aux 8 Go RAM d'Avignon, cf. infra). Fraîcheur du contenu = rebuild du service `web-build`
-(au `up`, ou re-déclenché à la publication — webhook prévu en FEAT ultérieur).
+**Décision de rendu (actée FEAT-002/005)** : **SSG statique** servi par nginx — runtime web minimal
+(adapté aux 8 Go RAM d'Avignon, cf. infra). Fraîcheur du contenu = rebuild via le service
+`publisher`, déclenché par les boutons **Aperçu** (→ `web_preview`) / **Publier** (→ `web_dist`)
+de l'admin (cf. FEAT-005).
 
 ### 9.3 Traefik (convention Avignon)
 
@@ -292,6 +297,10 @@ seules les variables d'environnement et le domaine changent.
 - **FEAT-001** (2026-06-15) — Fondations : choix de stack, architecture, navigation, design
   system (palette, typo, rythme), i18n/RTL, modèle de contenu. Registre visuel « chaleur
   éditoriale » validé (sites de référence observés ; pétrole en accent rare). Conception validée.
+- **FEAT-005** (2026-06-15) — Workflow éditorial statique : boutons **Aperçu** / **Publier**
+  dans l'admin. Service `publisher` (rebuild Astro à la demande, cibles public + preview),
+  service `preview` (nginx, basic-auth Traefik + noindex). Endpoints `/api/preview|publish`
+  réservés admin. Verrouillage de documents désactivé. Remplace le one-shot `web-build`.
 - **FEAT-003** (2026-06-15) — Pages affichées : navigation (header wordmark + menu + sélecteur
   de langue, footer), routage `/[lang]/` (accueil) + `/[lang]/[slug]/` (pages de menu), layout
   au design system, sérialiseur richText→HTML minimal. Modèle `Pages` étendu (`showInNav`,

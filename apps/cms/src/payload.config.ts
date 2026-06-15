@@ -13,11 +13,26 @@ import { SiteSettings } from './globals/SiteSettings'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+// Déclenche un rebuild du site statique via le service `publisher`.
+// target = 'public' (site de prod) | 'preview' (site d'aperçu).
+const triggerBuild = async (target: 'public' | 'preview') => {
+  const base = process.env.PUBLISHER_URL || 'http://publisher:9000'
+  const res = await fetch(`${base}/build/${target}`, {
+    method: 'POST',
+    headers: { 'x-token': process.env.PUBLISH_TOKEN || '' },
+  })
+  if (!res.ok) throw new Error(`publisher ${res.status}`)
+}
+
 export default buildConfig({
   admin: {
     user: Users.slug,
     importMap: {
       baseDir: path.resolve(dirname),
+    },
+    components: {
+      // Boutons « Aperçu » et « Publier » dans l'en-tête de l'admin.
+      actions: ['/components/AdminActions#PreviewButton', '/components/AdminActions#PublishButton'],
     },
   },
   collections: [Users, Media, Pages],
@@ -48,5 +63,26 @@ export default buildConfig({
     defaultLocale: 'fr',
     fallback: true,
   },
+  // Endpoints déclenchant les rebuilds (réservés aux admins connectés).
+  endpoints: [
+    {
+      path: '/publish',
+      method: 'post',
+      handler: async (req) => {
+        if (!req.user) return Response.json({ error: 'Unauthorized' }, { status: 403 })
+        await triggerBuild('public')
+        return Response.json({ ok: true })
+      },
+    },
+    {
+      path: '/preview',
+      method: 'post',
+      handler: async (req) => {
+        if (!req.user) return Response.json({ error: 'Unauthorized' }, { status: 403 })
+        await triggerBuild('preview')
+        return Response.json({ ok: true, url: process.env.PREVIEW_SITE_URL })
+      },
+    },
+  ],
   plugins: [],
 })

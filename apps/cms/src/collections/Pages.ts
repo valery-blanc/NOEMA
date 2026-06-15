@@ -13,6 +13,8 @@ export const Pages: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
   },
+  // Site à éditrice unique → pas de verrouillage de document (évite le « Edit » bloqué).
+  lockDocuments: false,
   access: {
     read: () => true,
   },

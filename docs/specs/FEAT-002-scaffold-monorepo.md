@@ -1,6 +1,7 @@
 # FEAT-002 — Scaffold du monorepo (Astro + Payload + Postgres, dockerisé)
 
-> Statut : **implémenté — en attente de test/validation Val** (build Tulear)
+> Statut : **déployé sur Avignon — en attente de validation Val**
+> Prod : https://noema.zitoon.com (public) · https://noema-admin.zitoon.com/admin (CMS) — TLS Let's Encrypt OK
 > Date : 2026-06-15
 > Spec source de vérité : `docs/specs/noema-spec.md` (§9)
 > Pré-requis : FEAT-001 (fondations) validé.

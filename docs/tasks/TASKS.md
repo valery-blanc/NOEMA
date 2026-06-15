@@ -28,7 +28,12 @@
 - [x] `docker-compose.yml` (+ `.dev.yml`) + `.env.example` + labels Traefik (réseau `web`, `websecure`, `letsencrypt` — convention Avignon relevée)
 - [x] Build + run sur Tulear (valider /admin, API, accueil) — **OK** : `/admin` 200, API globals/pages OK, accueil `/fr/` « Chaîne CMS → API → front : OK »
 - [x] Migrations Postgres (service `cms-migrate`) + fix `public/` → voir BUG-001
-- [~] Demander test à Val → **en attente de validation** ; après OK : remote + 1er commit + push + déploiement Avignon
+- [x] 1er commit + remote `git@github.com:valery-blanc/NOEMA.git` + push `main`
+- [x] **Déploiement Avignon** (`~/NOEMA`, `docker compose up -d --build`) — OK : conteneurs sains, migration appliquée, SSG généré
+  - Public : **https://noema.zitoon.com** (TLS Let's Encrypt OK, HTTP 200)
+  - Admin : **https://noema-admin.zitoon.com/admin** (TLS OK, HTTP 200)
+  - Domaine définitif `noema-library.ch` à acheter plus tard.
+- [~] Test/validation Val sur Avignon → créer le 1er compte admin, saisir SiteSettings + page `accueil`
 
 > **Décisions actées** (FEAT-002) :
 > - Rendu Astro = **SSG statique** servi par nginx (cf. infra.md, RAM Avignon 8 Go). Build « one-shot » au `up` (service `web-build` attend le CMS, génère dans le volume `web_dist`).

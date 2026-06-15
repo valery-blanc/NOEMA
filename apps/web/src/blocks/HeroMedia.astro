@@ -1,0 +1,83 @@
+---
+// Hero pleine largeur avec image de fond ; le HAUT de l'image est flouté et fondu
+// vers le beige (--c-ivory #F6F2EA) pour que le menu se pose sur un fond clair.
+const { image, eyebrow, heading, intro } = Astro.props
+---
+<section class="hero-media">
+  <div class="bg">
+    <img src={image} alt="" aria-hidden="true" />
+    <div class="blur" aria-hidden="true"></div>
+    <div class="fade" aria-hidden="true"></div>
+  </div>
+  <div class="hero-content">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    {heading && <h1>{heading}</h1>}
+    {intro && <p class="intro">{intro}</p>}
+  </div>
+</section>
+
+<style>
+  .hero-media {
+    position: relative;
+    inline-size: 100%;
+    min-block-size: min(92vh, 820px);
+    display: grid;
+    align-items: end;
+    overflow: hidden;
+    margin-block-end: clamp(2.5rem, 7vw, 6rem);
+  }
+  .bg { position: absolute; inset: 0; z-index: 0; }
+  .bg img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: center 60%; }
+
+  /* Flou progressif du haut (estompe vers le bas via le masque). */
+  .bg .blur {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 0;
+    block-size: 48%;
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 22%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 22%, transparent 100%);
+  }
+  /* Fondu beige du haut → le menu se pose sur #F6F2EA. */
+  .bg .fade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      var(--c-ivory) 0%,
+      rgba(246, 242, 234, 0.92) 9%,
+      rgba(246, 242, 234, 0.45) 22%,
+      rgba(246, 242, 234, 0) 44%
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    inline-size: 100%;
+    padding-inline: clamp(1.5rem, 6vw, 6rem);
+    padding-block-end: clamp(2.5rem, 8vh, 6rem);
+    max-inline-size: 60rem;
+  }
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    font-size: var(--fs-small);
+    color: var(--c-brass);
+    margin: 0 0 1rem;
+  }
+  .hero-content h1 {
+    font-size: var(--fs-display);
+    margin: 0;
+    color: var(--c-charcoal);
+  }
+  .intro {
+    font-family: var(--ff-display);
+    font-size: var(--fs-h3);
+    color: var(--c-charcoal-soft);
+    max-inline-size: 40rem;
+    margin-block-start: 1.2rem;
+  }
+</style>

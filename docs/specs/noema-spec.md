@@ -104,13 +104,15 @@ Pages publiques (ordre du menu) :
 4. **À propos** — la fondatrice : parcours, recherche, international, bibliothèques.
 5. **Contact** — prise de contact (formulaire + coordonnées).
 
-**Navigation** (implémentée FEAT-004 — parti pris « rail-index ») :
-- **Rail vertical fixe** (bord inline-start) façon catalogue de bibliothèque : wordmark **NOÊMA**,
-  liens **numérotés (folios `01 — Philosophie`)**, **sommaire vivant** de la page (surligné au
-  scroll), **sélecteur de langue** (FR/ES/EN/DE) en bas. Filet laiton en séparateur.
-- Mobile : off-canvas plein écran (burger + scrim, liens en grande serif).
+**Navigation** (FEAT-007 — barre supérieure, style meghanmaven ; remplace le rail de FEAT-004) :
+- **Barre supérieure** pleine largeur, **sticky** : wordmark **NOÊMA**, menu horizontal,
+  **sélecteur de langue** (FR/ES/EN/DE). Transparente au-dessus du hero de la home, devient
+  surface beige opaque (+ filet laiton) au scroll.
+- **Item actif/survolé** : un court **tiret barre les dernières lettres** du mot.
+- **Sous-menus déroulants** au survol/clavier (démo branchée sur Services — 3 piliers).
+- **Pleine largeur** (pas de conteneur centré) ; mesure de lecture conservée sur les paragraphes.
+- Mobile : menu plein écran (burger + scrim).
 - Pied de page : wordmark, liens, langue, mentions, contact, fine ligne laiton.
-- *(Évolution charte avec Claude Design : transparence au-dessus du hero, etc.)*
 
 Le menu reste volontairement court ; la fondatrice peut créer des **pages additionnelles**
 (slug libre) via le CMS — affichées en page autonome, et optionnellement ajoutées au menu
@@ -300,6 +302,11 @@ seules les variables d'environnement et le domaine changent.
 - **FEAT-001** (2026-06-15) — Fondations : choix de stack, architecture, navigation, design
   system (palette, typo, rythme), i18n/RTL, modèle de contenu. Registre visuel « chaleur
   éditoriale » validé (sites de référence observés ; pétrole en accent rare). Conception validée.
+- **FEAT-007** (2026-06-15) — Refonte navigation (style meghanmaven) : barre **supérieure**
+  sticky (transparente sur le hero → beige au scroll), **tiret barrant les dernières lettres**
+  de l'item actif, **sous-menus déroulants** (démo sur Services), **mise en page pleine largeur**,
+  **hero image** de home (`literature_cafe.jpg`) au **haut flouté + fondu beige**. Remplace le
+  rail-index de FEAT-004 (affichage marginalia/folios conservé).
 - **FEAT-004** (2026-06-15) — Page-builder à blocs (hero/prose+note/pullquote/indexList/
   signature/cta), `layout` localisé. Front : **navigation « rail-index »** (folios numérotés,
   catalogue vertical), **affichage « marginalia + folios »**, **sommaire vivant** (scroll-spy),

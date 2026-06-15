@@ -69,8 +69,18 @@
 - [x] Déploiement Avignon (reset DB lorem + migrate + seed + régénération) — OK, 20 pages 200, blocs/nav/sommaire live (seed rejoué après course migration → BUG-003)
 - [~] Test/validation Val (nav rail-index, sommaire, blocs, switch langue) → en attente
 
+### FEAT-007 — Nav supérieure (meghanmaven) + pleine largeur + hero image
+- [x] Barre supérieure sticky (transparente sur hero → beige au scroll), pleine largeur
+- [x] Tiret barrant les dernières lettres de l'item actif/survolé
+- [x] Sous-menus déroulants (survol + clavier) — démo sur Services
+- [x] Hero image home `literature_cafe.jpg` (haut flouté + fondu beige #F6F2EA)
+- [x] Build/run Tulear OK : nav, sous-menu, hero, pleine largeur, 20 pages 200
+- [~] Déploiement Avignon (pull + rebuild publisher + régénération) → en cours
+- [ ] Demander test à Val (nav top, tiret, sous-menu, hero, pleine largeur)
+
 ## Backlog (FEAT suivants)
 - [ ] FEAT-006 — Charte définitive (Claude Design) + contenu réel + SEO + formulaire contact
+- [ ] Sous-menus réels depuis le CMS (champ `navChildren`) au lieu de la démo
 - [ ] FEAT-004 — Modèle Payload (collections/globals/blocs) + seed contenu FR
 - [ ] FEAT-005 — Pages (Accueil, Philosophie, Services, À propos, Contact) + formulaire contact
 - [ ] FEAT-006 — Traductions ES/EN/DE + préparation locale arabe (RTL)

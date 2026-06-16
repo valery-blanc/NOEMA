@@ -94,8 +94,8 @@
 - [x] Seed des 4 pages, contenu d'exemple FR traduit ES/EN/DE
 - [x] Formulaire contact (mailto, site statique) piloté CMS
 - [x] DB reset + migration + types/importmap + build/run Tulear : 20 pages 200, rendu fidèle, i18n OK
-- [~] Déploiement Avignon (reset DB + migrate + seed + régénération) → en cours
-- [ ] Demander test à Val (les 4 pages, 4 langues, formulaire)
+- [x] Déploiement Avignon (reset DB + migrate + seed + régénération) — OK, 20 pages 200, 4 pages × 4 langues live
+- [~] Test/validation Val (les 4 pages, 4 langues, formulaire) → en attente
 
 ## Backlog (FEAT suivants)
 - [ ] Envoi e-mail serveur du formulaire (endpoint Payload + SMTP) au lieu du mailto

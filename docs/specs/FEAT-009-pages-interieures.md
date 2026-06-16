@@ -1,6 +1,6 @@
 # FEAT-009 — Pages intérieures (Philosophie, Services, À propos, Contact) + i18n
 
-> Statut : **implémenté (Tulear), en cours de déploiement Avignon**
+> Statut : **déployé sur Avignon — en attente de validation Val**
 > Date : 2026-06-16
 > Source : 2ᵉ handoff Claude Design (`Noema-handoff_5pages/` — gitignoré) : pages
 > `Philosophie.dc.html`, `Services.dc.html`, `A-propos.dc.html`, `Contact.dc.html`.

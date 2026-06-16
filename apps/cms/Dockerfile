@@ -24,7 +24,9 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup -S -g 1001 nodejs && adduser -S -u 1001 nextjs
 COPY --from=builder /app/public ./public
-RUN mkdir .next && chown nextjs:nodejs .next
+# Dossier des médias téléversés : créé et possédé par nextjs AVANT le montage du volume,
+# pour que le volume nommé `media_data` hérite des bons droits (sinon uploads = Permission denied).
+RUN mkdir .next media && chown nextjs:nodejs .next media
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER nextjs

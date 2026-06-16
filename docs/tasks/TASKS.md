@@ -111,8 +111,14 @@
 - [x] Bloc Hero : champs `headingRich` (richText) + `attribution` ; intro respecte les retours ligne
 - [x] Rendu inline du richText (lexicalToInlineHtml) dans HeroMedia + HeroText
 - [x] Migration INCRÉMENTALE (add_hero_rich) — sans reset ni re-seed (préserve contenu/photos)
-- [x] Déploiement Avignon (migrate + régénération, pas de seed) ; à vérifier
-- [ ] Demander test à Val (citation italique + auteur dans le hero accueil)
+- [x] Déploiement Avignon (migrate + régénération, pas de seed)
+- [x] Validé Val : citation hero OK (« parfait ») ; tags <i>/<b>/<small>/<br/> opérationnels
+- [x] Citation Borges traduite FR/ES/EN/DE (hero accueil)
+
+### FEAT-012 — Redirect racine selon la langue du navigateur (nginx)
+- [x] nginx : map Accept-Language → locale (défaut EN) + location = / → 302 /<lang>/
+- [x] Honore X-Forwarded-Proto → redirige en https direct (pas de hop http)
+- [x] Déployé + vérifié (fr/es/en/de + autre→en)
 
 > ⚠️ Règle : contenu réel désormais en base → **plus de reset DB**. Évolutions de modèle =
 > **migrations incrémentales** + déploiement `payload migrate` (sans `pnpm seed`).

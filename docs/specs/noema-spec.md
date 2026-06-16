@@ -302,6 +302,12 @@ seules les variables d'environnement et le domaine changent.
 - **FEAT-001** (2026-06-15) — Fondations : choix de stack, architecture, navigation, design
   system (palette, typo, rythme), i18n/RTL, modèle de contenu. Registre visuel « chaleur
   éditoriale » validé (sites de référence observés ; pétrole en accent rare). Conception validée.
+- **FEAT-012** (2026-06-16) — Redirection racine `/` côté **serveur (nginx)** selon la langue du
+  navigateur (`Accept-Language` → es/en/fr/de, défaut **en**), en **https** (honore X-Forwarded-Proto).
+  Remplace la page blanche meta-refresh. Traefik ne pouvant pas brancher sur les en-têtes.
+- **FEAT-011** (2026-06-16) — Mise en forme des titres de hero via **petits tags** (`<i> <b>
+  <small> <br/>`, allowlist sûre) au lieu d'un éditeur richText : permet une **citation**
+  (italique + auteur en `<small>`). Titre réduit pour les citations. Migrations incrémentales.
 - **FEAT-010** (2026-06-16) — Photos éditables depuis l'admin : bibliothèque **Media** persistée
   (volume `media_data`) et **servie sur le site statique** (`/media/<filename>` : volume monté en
   lecture dans le `publisher`, copié par astro). Champ **image** sur le bloc Hero (fond home) ;

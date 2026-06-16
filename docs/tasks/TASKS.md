@@ -1,5 +1,21 @@
 # TASKS
 
+## État au 2026-06-16 (fin de journée)
+
+Site **en ligne et fonctionnel** sur Avignon (prod) :
+- Public **https://noema.zitoon.com** · Admin **https://noema-admin.zitoon.com/admin** ·
+  Aperçu **https://noema-preview.zitoon.com** (basic-auth `noema`).
+- **5 pages** (Accueil, Philosophie, Services, À propos, Contact) au design Claude Design,
+  **4 langues** FR/ES/EN/DE, page-builder à blocs éditable.
+- **Workflow éditrice** : éditer dans l'admin → **Aperçu** → **Publier**. Photos via Media.
+  Titres : tags `<i> <b> <small> <br/>`. Redirection racine `/` selon langue navigateur (défaut EN).
+- **Build/test = Avignon** (Tulear hors boucle). Contenu réel en base → **migrations
+  incrémentales uniquement** (plus de reset DB).
+
+**Reste à faire (backlog, voir bas de fichier)** : envoi e-mail serveur du formulaire de contact,
+contenu réel + vraies photos, SEO (title/description multilingues, sitemap, og:image),
+traduction des autres titres/contenus d'exemple si besoin.
+
 ## In Progress
 
 ### FEAT-001 — Fondations (architecture, nav, design system, i18n)

@@ -95,7 +95,10 @@
 - [x] Formulaire contact (mailto, site statique) piloté CMS
 - [x] DB reset + migration + types/importmap + build/run Tulear : 20 pages 200, rendu fidèle, i18n OK
 - [x] Déploiement Avignon (reset DB + migrate + seed + régénération) — OK, 20 pages 200, 4 pages × 4 langues live
-- [~] Test/validation Val (les 4 pages, 4 langues, formulaire) → en attente
+- [x] Validé Val : Philosophie + Services OK
+- [x] FIX BUG-004 : Contact en pétrole + hero À propos pétrole + récit 2 colonnes (rebuild cms-migrate pour re-seed)
+- [x] Décision infra (Val 2026-06-16) : build/test sur **Avignon** via aperçu, **Tulear sorti de la boucle** (infra.md MAJ)
+- [~] Re-validation Val (Contact pétrole + À propos)
 
 ## Backlog (FEAT suivants)
 - [ ] Envoi e-mail serveur du formulaire (endpoint Payload + SMTP) au lieu du mailto

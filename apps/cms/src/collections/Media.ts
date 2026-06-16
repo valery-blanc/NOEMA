@@ -1,5 +1,8 @@
 import type { CollectionConfig } from 'payload'
+import path from 'path'
 
+// Médias téléversés depuis l'admin. Stockés dans /app/media (volume persistant `media_data`,
+// monté aussi en lecture seule dans le service `publisher` → copiés dans le site statique).
 export const Media: CollectionConfig = {
   slug: 'media',
   lockDocuments: false,
@@ -10,8 +13,11 @@ export const Media: CollectionConfig = {
     {
       name: 'alt',
       type: 'text',
-      required: true,
+      required: false,
+      localized: true,
     },
   ],
-  upload: true,
+  upload: {
+    staticDir: path.resolve(process.cwd(), 'media'),
+  },
 }

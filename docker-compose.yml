@@ -52,6 +52,8 @@ services:
       PUBLISHER_URL: http://publisher:9000
       PUBLISH_TOKEN: ${PUBLISH_TOKEN}
       PREVIEW_SITE_URL: ${PREVIEW_SITE_URL}
+    volumes:
+      - media_data:/app/media
     networks: [internal, web]
     labels:
       - traefik.enable=true
@@ -80,6 +82,7 @@ services:
     volumes:
       - web_dist:/out/public
       - web_preview:/out/preview
+      - media_data:/app/public/media:ro
     networks: [internal]
     healthcheck:
       test: ['CMD', 'wget', '-q', '-O', '/dev/null', 'http://localhost:9000/health']
@@ -143,3 +146,4 @@ volumes:
   pg_data:
   web_dist:
   web_preview:
+  media_data:

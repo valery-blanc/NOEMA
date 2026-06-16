@@ -222,12 +222,6 @@
           "primaryKey": true,
           "notNull": true
         },
-        "alt": {
-          "name": "alt",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -351,6 +345,80 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.media_locales": {
+      "name": "media_locales",
+      "schema": "",
+      "columns": {
+        "alt": {
+          "name": "alt",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "media_locales_locale_parent_id_unique": {
+          "name": "media_locales_locale_parent_id_unique",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "media_locales_parent_id_fk": {
+          "name": "media_locales_parent_id_fk",
+          "tableFrom": "media_locales",
+          "tableTo": "media",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.pages_blocks_hero": {
       "name": "pages_blocks_hero",
       "schema": "",
@@ -420,6 +488,18 @@
         },
         "cta_href": {
           "name": "cta_href",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image_id": {
+          "name": "image_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image_url": {
+          "name": "image_url",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -516,6 +596,21 @@
           "method": "btree",
           "with": {}
         },
+        "pages_blocks_hero_image_idx": {
+          "name": "pages_blocks_hero_image_idx",
+          "columns": [
+            {
+              "expression": "image_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "pages_blocks_hero_portrait_idx": {
           "name": "pages_blocks_hero_portrait_idx",
           "columns": [
@@ -533,6 +628,19 @@
         }
       },
       "foreignKeys": {
+        "pages_blocks_hero_image_id_media_id_fk": {
+          "name": "pages_blocks_hero_image_id_media_id_fk",
+          "tableFrom": "pages_blocks_hero",
+          "tableTo": "media",
+          "columnsFrom": [
+            "image_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
         "pages_blocks_hero_portrait_id_media_id_fk": {
           "name": "pages_blocks_hero_portrait_id_media_id_fk",
           "tableFrom": "pages_blocks_hero",
@@ -4398,6 +4506,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "0e3a8488-b24e-4fde-a309-b9a0b7ea4970",
+  "id": "8f34f341-4ce1-4f22-8dc0-dc8b337ba374",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

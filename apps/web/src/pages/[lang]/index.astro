@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro'
 import BlockList from '../../blocks/BlockList.astro'
 import HeroMedia from '../../blocks/HeroMedia.astro'
 import { getSiteSettings, getNavPages, getPageBySlug } from '../../lib/payload.js'
+import { mediaUrl } from '../../lib/media.js'
 
 export function getStaticPaths() {
   return ['fr', 'es', 'en', 'de'].map((lang) => ({ params: { lang } }))
@@ -25,10 +26,11 @@ const siteName = settings?.siteName ?? 'NOÊMA'
 const blocks = page?.layout ?? []
 const heroBlock = blocks[0]?.blockType === 'hero' ? blocks[0] : null
 const rest = heroBlock ? blocks.slice(1) : blocks
+const heroImage = mediaUrl(heroBlock?.image, heroBlock?.imageUrl) || '/literature_cafe.jpg'
 ---
 <Base lang={lang} isHome={true} currentSlug="accueil" title={siteName} settings={settings} navPages={navPages}>
   <HeroMedia
-    image="/literature_cafe.jpg"
+    image={heroImage}
     eyebrow={heroBlock?.eyebrow}
     heading={heroBlock?.heading ?? siteName}
     intro={heroBlock?.intro}

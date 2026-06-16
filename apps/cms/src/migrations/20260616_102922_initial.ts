@@ -29,7 +29,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   
   CREATE TABLE "media" (
   	"id" serial PRIMARY KEY NOT NULL,
-  	"alt" varchar NOT NULL,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"url" varchar,
@@ -41,6 +40,13 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"height" numeric,
   	"focal_x" numeric,
   	"focal_y" numeric
+  );
+  
+  CREATE TABLE "media_locales" (
+  	"alt" varchar,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"_parent_id" integer NOT NULL
   );
   
   CREATE TABLE "pages_blocks_hero" (
@@ -55,6 +61,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"intro" varchar,
   	"cta_label" varchar,
   	"cta_href" varchar,
+  	"image_id" integer,
+  	"image_url" varchar,
   	"portrait_id" integer,
   	"portrait_url" varchar,
   	"portrait_caption" varchar,
@@ -389,6 +397,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   );
   
   ALTER TABLE "users_sessions" ADD CONSTRAINT "users_sessions_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "media_locales" ADD CONSTRAINT "media_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_blocks_hero" ADD CONSTRAINT "pages_blocks_hero_image_id_media_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "pages_blocks_hero" ADD CONSTRAINT "pages_blocks_hero_portrait_id_media_id_fk" FOREIGN KEY ("portrait_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "pages_blocks_hero" ADD CONSTRAINT "pages_blocks_hero_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages_blocks_statement" ADD CONSTRAINT "pages_blocks_statement_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
@@ -428,10 +438,12 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "media_updated_at_idx" ON "media" USING btree ("updated_at");
   CREATE INDEX "media_created_at_idx" ON "media" USING btree ("created_at");
   CREATE UNIQUE INDEX "media_filename_idx" ON "media" USING btree ("filename");
+  CREATE UNIQUE INDEX "media_locales_locale_parent_id_unique" ON "media_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "pages_blocks_hero_order_idx" ON "pages_blocks_hero" USING btree ("_order");
   CREATE INDEX "pages_blocks_hero_parent_id_idx" ON "pages_blocks_hero" USING btree ("_parent_id");
   CREATE INDEX "pages_blocks_hero_path_idx" ON "pages_blocks_hero" USING btree ("_path");
   CREATE INDEX "pages_blocks_hero_locale_idx" ON "pages_blocks_hero" USING btree ("_locale");
+  CREATE INDEX "pages_blocks_hero_image_idx" ON "pages_blocks_hero" USING btree ("image_id");
   CREATE INDEX "pages_blocks_hero_portrait_idx" ON "pages_blocks_hero" USING btree ("portrait_id");
   CREATE INDEX "pages_blocks_statement_order_idx" ON "pages_blocks_statement" USING btree ("_order");
   CREATE INDEX "pages_blocks_statement_parent_id_idx" ON "pages_blocks_statement" USING btree ("_parent_id");
@@ -540,6 +552,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
    DROP TABLE "users_sessions" CASCADE;
   DROP TABLE "users" CASCADE;
   DROP TABLE "media" CASCADE;
+  DROP TABLE "media_locales" CASCADE;
   DROP TABLE "pages_blocks_hero" CASCADE;
   DROP TABLE "pages_blocks_statement" CASCADE;
   DROP TABLE "pages_blocks_manifesto_items" CASCADE;

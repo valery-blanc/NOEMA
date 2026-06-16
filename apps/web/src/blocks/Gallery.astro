@@ -1,5 +1,6 @@
 ---
 // Section Réalisations : grille de cartes (image réelle si fournie, sinon emplacement hachuré).
+import { mediaUrl } from '../lib/media.js'
 const { block } = Astro.props
 const items = block.items ?? []
 ---
@@ -11,7 +12,7 @@ const items = block.items ?? []
     </div>
     <div class="grid">
       {items.map((it, i) => {
-        const url = it.image?.url || it.imageUrl || null
+        const url = mediaUrl(it.image, it.imageUrl)
         return (
           <div class={`card ${i === 0 ? 'big' : 'small'} ${url ? '' : 'ph'}`} data-reveal style={`transition-delay:${i * 80}ms`}>
             {url && <img src={url} alt={it.image?.alt ?? it.caption ?? ''} />}

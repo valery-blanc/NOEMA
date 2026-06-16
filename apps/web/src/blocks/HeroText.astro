@@ -1,8 +1,9 @@
 ---
 // Hero de page intérieure — variante crème ou pétrole, portrait optionnel (À propos).
+import { mediaUrl } from '../lib/media.js'
 const { block } = Astro.props
 const variant = block.variant === 'petrol' ? 'petrol' : 'cream'
-const portrait = block.portrait?.url || block.portraitUrl || null
+const portrait = mediaUrl(block.portrait, block.portraitUrl)
 const hasPortrait = portrait !== null || block.comingSoon || block.portraitCaption
 ---
 <section class={`herotext ${variant} ${hasPortrait ? 'with-portrait' : ''}`} data-reveal>

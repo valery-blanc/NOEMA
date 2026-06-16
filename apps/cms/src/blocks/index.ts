@@ -15,6 +15,8 @@ export const Hero: Block = {
     { name: 'intro', type: 'textarea' },
     { name: 'ctaLabel', type: 'text' },
     { name: 'ctaHref', type: 'text' },
+    { name: 'image', type: 'upload', relationTo: 'media', admin: { description: 'Image de fond (hero plein écran, variante « media » — ex. accueil).' } },
+    { name: 'imageUrl', type: 'text', admin: { description: 'URL d’image de fond directe si pas d’upload (ex. /literature_cafe.jpg).' } },
     { name: 'portrait', type: 'upload', relationTo: 'media' },
     { name: 'portraitUrl', type: 'text', admin: { description: 'URL d’image directe si pas d’upload.' } },
     { name: 'portraitCaption', type: 'text' },

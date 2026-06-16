@@ -157,7 +157,7 @@ export interface User {
  */
 export interface Media {
   id: number;
-  alt: string;
+  alt?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -193,6 +193,14 @@ export interface Page {
             intro?: string | null;
             ctaLabel?: string | null;
             ctaHref?: string | null;
+            /**
+             * Image de fond (hero plein écran, variante « media » — ex. accueil).
+             */
+            image?: (number | null) | Media;
+            /**
+             * URL d’image de fond directe si pas d’upload (ex. /literature_cafe.jpg).
+             */
+            imageUrl?: string | null;
             portrait?: (number | null) | Media;
             /**
              * URL d’image directe si pas d’upload.
@@ -584,6 +592,8 @@ export interface PagesSelect<T extends boolean = true> {
               intro?: T;
               ctaLabel?: T;
               ctaHref?: T;
+              image?: T;
+              imageUrl?: T;
               portrait?: T;
               portraitUrl?: T;
               portraitCaption?: T;

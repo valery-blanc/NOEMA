@@ -1,7 +1,8 @@
 ---
 // Section Fondatrice : portrait (ou emplacement), citation serif, signature script, rôle.
+import { mediaUrl } from '../lib/media.js'
 const { block } = Astro.props
-const url = block.portrait?.url || null
+const url = mediaUrl(block.portrait, block.portraitUrl)
 ---
 <section class="founder">
   <div class="wrap grid">

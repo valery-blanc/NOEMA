@@ -26,3 +26,14 @@ export async function getPageBySlug(slug, locale) {
   )
   return data.docs?.[0] ?? null
 }
+
+// Items du méga-menu Services : dérivés du 1er bloc `services` de la page « services ».
+export async function getServicesItems(locale) {
+  try {
+    const page = await getPageBySlug('services', locale)
+    const block = (page?.layout ?? []).find((b) => b.blockType === 'services')
+    return (block?.items ?? []).map((it) => ({ title: it.title, text: it.text }))
+  } catch {
+    return []
+  }
+}

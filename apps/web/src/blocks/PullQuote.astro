@@ -1,39 +1,20 @@
 ---
 const { block } = Astro.props
 ---
-<aside class="pullquote" data-reveal>
-  <blockquote>
-    <p>{block.quote}</p>
-    {block.attribution && <cite>{block.attribution}</cite>}
-  </blockquote>
-</aside>
+<section class="pq" data-reveal>
+  <div class="wrap">
+    <blockquote>
+      <p>{block.quote}</p>
+      {block.attribution && <cite>{block.attribution}</cite>}
+    </blockquote>
+  </div>
+</section>
 
 <style>
-  .pullquote {
-    margin-block: clamp(3rem, 8vw, 6rem);
-  }
-  blockquote {
-    margin: 0;
-    max-inline-size: 34ch;
-    margin-inline: auto;
-    text-align: center;
-  }
-  blockquote p {
-    font-family: var(--ff-display);
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    line-height: 1.18;
-    color: var(--c-charcoal);
-    margin: 0;
-  }
+  .pq { background: var(--c-cream); padding-block: clamp(48px,8vw,96px); }
+  blockquote { margin: 0; max-inline-size: 34ch; margin-inline: auto; text-align: center; }
+  blockquote p { font-family: var(--ff-display); font-size: clamp(28px,4vw,48px); line-height: 1.18; color: var(--c-petrol-head); margin: 0; }
   blockquote p::before { content: '“'; }
   blockquote p::after { content: '”'; }
-  cite {
-    display: block;
-    margin-block-start: 1.2rem;
-    font-style: normal;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    font-size: var(--fs-small);
-    color: var(--c-brass);
-  }
+  cite { display: block; margin-block-start: 1.2rem; font-style: normal; font-family: var(--ff-mono); text-transform: uppercase; letter-spacing: .18em; font-size: 11px; color: var(--c-gold-deep); }
 </style>

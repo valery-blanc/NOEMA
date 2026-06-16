@@ -1,0 +1,52 @@
+---
+// Section Réalisations : grille de cartes (image réelle si fournie, sinon emplacement hachuré).
+const { block } = Astro.props
+const items = block.items ?? []
+---
+<section class="gal">
+  <div class="wrap">
+    <div class="head">
+      {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
+      {block.heading && <h2>{block.heading}</h2>}
+    </div>
+    <div class="grid">
+      {items.map((it, i) => {
+        const url = it.image?.url || it.imageUrl || null
+        return (
+          <div class={`card ${i === 0 ? 'big' : 'small'} ${url ? '' : 'ph'}`} data-reveal style={`transition-delay:${i * 80}ms`}>
+            {url && <img src={url} alt={it.image?.alt ?? it.caption ?? ''} />}
+            {url && <div class="shade"></div>}
+            {it.tag && <span class="tag">{it.tag}</span>}
+            <span class="cap">{it.caption}</span>
+          </div>
+        )
+      })}
+    </div>
+  </div>
+</section>
+
+<style>
+  .gal { background: var(--c-cream); padding-block: var(--pad-y); }
+  .head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 16px; margin-block-end: clamp(28px,3.4vw,44px); }
+  .eyebrow { color: var(--c-gold-deep); }
+  .head h2 { font-size: var(--fs-h2); color: var(--c-petrol-head); }
+  .grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: clamp(16px,2.2vw,28px); }
+  .card { position: relative; border-radius: 6px; overflow: hidden; }
+  .card.big { aspect-ratio: 16 / 10; }
+  .card.small { aspect-ratio: 3 / 4; }
+  .card img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; object-position: center 56%; transition: transform 1.4s cubic-bezier(.2,.7,.2,1); }
+  .card:hover img { transform: scale(1.04); }
+  .card .shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,45,52,.6), transparent 55%); }
+  /* emplacement hachuré (sans image) */
+  .card.ph {
+    border: 1px solid var(--c-line);
+    background:
+      linear-gradient(0deg, rgba(19,58,66,.04), rgba(19,58,66,.04)),
+      repeating-linear-gradient(135deg, rgba(19,58,66,.06) 0 1px, transparent 1px 11px),
+      var(--c-placeholder);
+  }
+  .cap { position: absolute; inset-inline-start: 20px; inset-block-end: 18px; font-family: var(--ff-mono); font-size: 11px; letter-spacing: .06em; color: #F4EFE2; z-index: 1; }
+  .card.ph .cap { color: rgba(19,58,66,.55); }
+  .tag { position: absolute; inset-inline-end: 16px; inset-block-start: 14px; font-family: var(--ff-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: rgba(169,138,91,.95); z-index: 1; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+</style>

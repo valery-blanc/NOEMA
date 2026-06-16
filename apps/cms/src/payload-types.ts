@@ -188,19 +188,85 @@ export interface Page {
     | (
         | {
             /**
-             * Sur-titre court (capitales).
+             * Sur-titre mono (lieu / mention).
              */
             eyebrow?: string | null;
             heading: string;
             intro?: string | null;
+            ctaLabel?: string | null;
+            /**
+             * Lien du bouton (ex. /fr/contact/).
+             */
+            ctaHref?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'hero';
           }
         | {
+            eyebrow?: string | null;
+            heading?: string | null;
+            intro?: string | null;
+            rows?:
+              | {
+                  term: string;
+                  caption?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'values';
+          }
+        | {
+            eyebrow?: string | null;
+            heading?: string | null;
+            items?:
+              | {
+                  title: string;
+                  text?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'services';
+          }
+        | {
+            eyebrow?: string | null;
+            heading?: string | null;
+            items?:
+              | {
+                  caption: string;
+                  /**
+                   * Mention (ex. « à venir »). Optionnel.
+                   */
+                  tag?: string | null;
+                  image?: (number | null) | Media;
+                  /**
+                   * URL d’image directe (ex. /literature_cafe.jpg) si pas d’upload.
+                   */
+                  imageUrl?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'gallery';
+          }
+        | {
+            eyebrow?: string | null;
+            quote: string;
             /**
-             * Titre de section (apparaît dans le sommaire + folio en marge). Optionnel.
+             * Nom en script (signature).
              */
+            signatureName?: string | null;
+            role?: string | null;
+            portrait?: (number | null) | Media;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'founder';
+          }
+        | {
             sectionTitle?: string | null;
             body?: {
               root: {
@@ -218,7 +284,7 @@ export interface Page {
               [k: string]: unknown;
             } | null;
             /**
-             * Note de marge (marginalia) affichée à côté du texte. Optionnel.
+             * Note de marge. Optionnel.
              */
             note?: string | null;
             id?: string | null;
@@ -233,44 +299,9 @@ export interface Page {
             blockType: 'pullquote';
           }
         | {
-            /**
-             * Titre de section (apparaît dans le sommaire + folio en marge). Optionnel.
-             */
-            sectionTitle?: string | null;
-            entries?:
-              | {
-                  label: string;
-                  text?: string | null;
-                  id?: string | null;
-                }[]
-              | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'indexList';
-          }
-        | {
-            /**
-             * Titre de section (apparaît dans le sommaire + folio en marge). Optionnel.
-             */
-            sectionTitle?: string | null;
-            name?: string | null;
-            role?: string | null;
-            bio?: string | null;
-            /**
-             * Portrait (optionnel ; emplacement réservé en attendant la séance photo).
-             */
-            portrait?: (number | null) | Media;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'signature';
-          }
-        | {
             heading: string;
             text?: string | null;
             buttonLabel?: string | null;
-            /**
-             * Lien (ex. /fr/contact/ ou mailto:).
-             */
             buttonHref?: string | null;
             id?: string | null;
             blockName?: string | null;
@@ -418,6 +449,67 @@ export interface PagesSelect<T extends boolean = true> {
               eyebrow?: T;
               heading?: T;
               intro?: T;
+              ctaLabel?: T;
+              ctaHref?: T;
+              id?: T;
+              blockName?: T;
+            };
+        values?:
+          | T
+          | {
+              eyebrow?: T;
+              heading?: T;
+              intro?: T;
+              rows?:
+                | T
+                | {
+                    term?: T;
+                    caption?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        services?:
+          | T
+          | {
+              eyebrow?: T;
+              heading?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        gallery?:
+          | T
+          | {
+              eyebrow?: T;
+              heading?: T;
+              items?:
+                | T
+                | {
+                    caption?: T;
+                    tag?: T;
+                    image?: T;
+                    imageUrl?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        founder?:
+          | T
+          | {
+              eyebrow?: T;
+              quote?: T;
+              signatureName?: T;
+              role?: T;
+              portrait?: T;
               id?: T;
               blockName?: T;
             };
@@ -435,31 +527,6 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               quote?: T;
               attribution?: T;
-              id?: T;
-              blockName?: T;
-            };
-        indexList?:
-          | T
-          | {
-              sectionTitle?: T;
-              entries?:
-                | T
-                | {
-                    label?: T;
-                    text?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        signature?:
-          | T
-          | {
-              sectionTitle?: T;
-              name?: T;
-              role?: T;
-              bio?: T;
-              portrait?: T;
               id?: T;
               blockName?: T;
             };
@@ -518,10 +585,18 @@ export interface SiteSetting {
   id: number;
   siteName: string;
   /**
-   * Baseline affichée sous le nom (ex. « Maison intellectuelle »).
+   * Baseline (footer) — ex. « Maison de bibliothèques privées… ».
    */
   tagline?: string | null;
   contactEmail?: string | null;
+  /**
+   * Domaine affiché (ex. noema-library.ch).
+   */
+  domain?: string | null;
+  /**
+   * Lieu (ex. Genève, Suisse).
+   */
+  location?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -533,6 +608,8 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   siteName?: T;
   tagline?: T;
   contactEmail?: T;
+  domain?: T;
+  location?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

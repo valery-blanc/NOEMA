@@ -19,15 +19,26 @@ export const SiteSettings: GlobalConfig = {
     },
     {
       name: 'tagline',
-      type: 'text',
+      type: 'textarea',
       localized: true,
       admin: {
-        description: 'Baseline affichée sous le nom (ex. « Maison intellectuelle »).',
+        description: 'Baseline (footer) — ex. « Maison de bibliothèques privées… ».',
       },
     },
     {
       name: 'contactEmail',
       type: 'email',
+    },
+    {
+      name: 'domain',
+      type: 'text',
+      admin: { description: 'Domaine affiché (ex. noema-library.ch).' },
+    },
+    {
+      name: 'location',
+      type: 'text',
+      localized: true,
+      admin: { description: 'Lieu (ex. Genève, Suisse).' },
     },
   ],
 }

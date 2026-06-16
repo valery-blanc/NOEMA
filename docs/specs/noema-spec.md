@@ -302,6 +302,12 @@ seules les variables d'environnement et le domaine changent.
 - **FEAT-001** (2026-06-15) — Fondations : choix de stack, architecture, navigation, design
   system (palette, typo, rythme), i18n/RTL, modèle de contenu. Registre visuel « chaleur
   éditoriale » validé (sites de référence observés ; pétrole en accent rare). Conception validée.
+- **FEAT-008** (2026-06-16) — Intégration de la **charte Claude Design** (`Noema-site.dc.html`) :
+  palette crème/pétrole/or + 4 polices (Cormorant, Hanken Grotesk, IBM Plex Mono, Pinyon Script),
+  en-tête fixe pleine largeur (strike animé + **méga-menu Services piloté CMS**), home
+  full-bleed (hero image, philosophie, bande services, réalisations, fondatrice), footer.
+  Blocs `hero/values/services/gallery/founder` + contenu d'exemple **traduit FR/ES/EN/DE**.
+  Fait foi sur la direction visuelle (remplace FEAT-004 rail-index et FEAT-007 nav maison).
 - **FEAT-007** (2026-06-15) — Refonte navigation (style meghanmaven) : barre **supérieure**
   sticky (transparente sur le hero → beige au scroll), **tiret barrant les dernières lettres**
   de l'item actif, **sous-menus déroulants** (démo sur Services), **mise en page pleine largeur**,

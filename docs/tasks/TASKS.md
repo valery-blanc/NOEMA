@@ -78,9 +78,19 @@
 - [~] Déploiement Avignon (pull + rebuild publisher + régénération) → en cours
 - [ ] Demander test à Val (nav top, tiret, sous-menu, hero, pleine largeur)
 
+### FEAT-008 — Intégration design Claude Design + i18n 4 langues
+- [x] Tokens charte (palette crème/pétrole/or, 4 polices) depuis Noema-site.dc.html
+- [x] Base.astro : header fixe + strike animé + méga-menu Services (CMS) + footer ; langues ES·EN·FR·DE
+- [x] Blocs hero/values/services/gallery/founder (+ prose/pullquote/cta) mappés sur le design
+- [x] Seed contenu d'exemple FR (design) traduit ES/EN/DE ; SiteSettings (tagline/domain/location)
+- [x] DB reset + migration `initial` + types/importmap
+- [x] Build/run Tulear OK : design rendu fidèle, méga-menu, i18n, 20 pages 200
+- [~] Déploiement Avignon (reset DB + migrate + seed + régénération) → en cours
+- [ ] Demander test à Val (rendu, méga-menu, strike, hero, 4 langues)
+
 ## Backlog (FEAT suivants)
-- [ ] FEAT-006 — Charte définitive (Claude Design) + contenu réel + SEO + formulaire contact
-- [ ] Sous-menus réels depuis le CMS (champ `navChildren`) au lieu de la démo
+- [ ] Contenu réel (remplacer l'exemple) + photos + SEO + formulaire contact
+- [ ] Sous-menus/nav pilotés depuis le CMS de façon générique (au-delà de Services)
 - [ ] FEAT-004 — Modèle Payload (collections/globals/blocs) + seed contenu FR
 - [ ] FEAT-005 — Pages (Accueil, Philosophie, Services, À propos, Contact) + formulaire contact
 - [ ] FEAT-006 — Traductions ES/EN/DE + préparation locale arabe (RTL)

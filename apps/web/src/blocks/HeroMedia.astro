@@ -1,83 +1,72 @@
 ---
-// Hero pleine largeur avec image de fond ; le HAUT de l'image est flouté et fondu
-// vers le beige (--c-ivory #F6F2EA) pour que le menu se pose sur un fond clair.
-const { image, eyebrow, heading, intro } = Astro.props
+// Hero pleine page (home) — image café-bibliothèque, haut flouté + dégradés pétrole,
+// titre serif, intro + bouton « Prendre rendez-vous ». Fidèle au design Claude Design.
+const { image = '/literature_cafe.jpg', eyebrow, heading, intro, ctaLabel, ctaHref, lang = 'fr' } = Astro.props
+const scroll = { fr: 'Défiler', es: 'Desplazar', en: 'Scroll', de: 'Scrollen' }[lang] ?? 'Défiler'
 ---
-<section class="hero-media">
-  <div class="bg">
-    <img src={image} alt="" aria-hidden="true" />
-    <div class="blur" aria-hidden="true"></div>
-    <div class="fade" aria-hidden="true"></div>
+<section class="hero">
+  <img class="bg" src={image} alt="" aria-hidden="true" />
+  <div class="grad"></div>
+  <div class="blurtop" aria-hidden="true">
+    <img src={image} alt="" />
+    <div class="blurtop-grad"></div>
   </div>
-  <div class="hero-content">
-    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
-    {heading && <h1>{heading}</h1>}
-    {intro && <p class="intro">{intro}</p>}
+
+  <div class="content" data-reveal>
+    <div class="wrap">
+      {eyebrow && <div class="eyebrow loc">{eyebrow}</div>}
+      {heading && <h1>{heading}</h1>}
+      <div class="row">
+        {intro && <p>{intro}</p>}
+        {ctaLabel && <a class="cta" href={ctaHref || '#'}>{ctaLabel}</a>}
+      </div>
+    </div>
   </div>
+
+  <div class="scroll">{scroll}</div>
 </section>
 
 <style>
-  .hero-media {
-    position: relative;
-    inline-size: 100%;
-    min-block-size: min(92vh, 820px);
-    display: grid;
-    align-items: end;
-    overflow: hidden;
-    margin-block-end: clamp(2.5rem, 7vw, 6rem);
+  .hero { position: relative; inline-size: 100%; block-size: 100vh; min-block-size: 660px; overflow: hidden; }
+  .bg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; object-position: center 56%; }
+  .grad {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(15,45,52,.66) 0%, rgba(15,45,52,.16) 20%, rgba(15,45,52,.06) 42%, rgba(15,45,52,.34) 72%, rgba(15,45,52,.74) 100%);
   }
-  .bg { position: absolute; inset: 0; z-index: 0; }
-  .bg img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: center 60%; }
+  /* Bandeau supérieur flouté (le menu s'y pose). */
+  .blurtop {
+    position: absolute; inset-block-start: 0; inset-inline: 0; block-size: 150px; overflow: hidden; pointer-events: none;
+    -webkit-mask: linear-gradient(to bottom, #000 58%, transparent 100%);
+    mask: linear-gradient(to bottom, #000 58%, transparent 100%);
+  }
+  .blurtop img {
+    position: absolute; inset-block-start: 0; inset-inline-start: 0; inline-size: 100%; block-size: 100vh;
+    object-fit: cover; object-position: center 56%;
+    filter: blur(16px) brightness(.72) saturate(1.05); transform: scale(1.08);
+  }
+  .blurtop-grad { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(15,45,52,.66), rgba(15,45,52,.3)); }
 
-  /* Flou progressif du haut (estompe vers le bas via le masque). */
-  .bg .blur {
-    position: absolute;
-    inset-inline: 0;
-    inset-block-start: 0;
-    block-size: 48%;
-    backdrop-filter: blur(9px);
-    -webkit-backdrop-filter: blur(9px);
-    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 22%, transparent 100%);
-    mask-image: linear-gradient(to bottom, #000 0%, #000 22%, transparent 100%);
+  .content { position: absolute; inset-inline: 0; inset-block-end: clamp(48px, 7vw, 104px); }
+  .loc { letter-spacing: .24em; color: var(--c-gold-light); }
+  .hero h1 {
+    font-family: var(--ff-display); font-weight: 500; font-size: var(--fs-hero);
+    line-height: .98; letter-spacing: -.005em; color: #F6F1E6;
+    margin: .26em 0 0; max-inline-size: 17ch; text-wrap: balance;
   }
-  /* Fondu beige du haut → le menu se pose sur #F6F2EA. */
-  .bg .fade {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to bottom,
-      var(--c-ivory) 0%,
-      rgba(246, 242, 234, 0.92) 9%,
-      rgba(246, 242, 234, 0.45) 22%,
-      rgba(246, 242, 234, 0) 44%
-    );
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: clamp(18px,3vw,40px); margin-block-start: clamp(22px,3vw,38px); max-inline-size: 760px; }
+  .row p { font-size: 16.5px; line-height: 1.7; color: rgba(246,241,230,.86); margin: 0; max-inline-size: 46ch; }
+  .cta {
+    display: inline-flex; align-items: center; gap: 12px; padding: 15px 26px;
+    border: 1px solid rgba(216,190,138,.85); border-radius: 40px;
+    font-family: var(--ff-mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+    color: #F6F1E6; white-space: nowrap; transition: background .4s, color .4s, border-color .4s;
   }
+  .cta:hover { background: var(--c-gold-light); color: var(--c-petrol-deep); border-color: var(--c-gold-light); }
 
-  .hero-content {
-    position: relative;
-    z-index: 1;
-    inline-size: 100%;
-    padding-inline: clamp(1.5rem, 6vw, 6rem);
-    padding-block-end: clamp(2.5rem, 8vh, 6rem);
-    max-inline-size: 60rem;
+  .scroll {
+    position: absolute; inset-inline-end: clamp(20px,4vw,56px); inset-block-end: clamp(20px,3vw,34px);
+    font-family: var(--ff-mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+    color: rgba(246,241,230,.55); writing-mode: vertical-rl;
   }
-  .eyebrow {
-    text-transform: uppercase;
-    letter-spacing: 0.3em;
-    font-size: var(--fs-small);
-    color: var(--c-brass);
-    margin: 0 0 1rem;
-  }
-  .hero-content h1 {
-    font-size: var(--fs-display);
-    margin: 0;
-    color: var(--c-charcoal);
-  }
-  .intro {
-    font-family: var(--ff-display);
-    font-size: var(--fs-h3);
-    color: var(--c-charcoal-soft);
-    max-inline-size: 40rem;
-    margin-block-start: 1.2rem;
-  }
+  @media (max-width: 860px) { .hero { block-size: 92vh; } }
 </style>

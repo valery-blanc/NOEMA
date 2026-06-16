@@ -3,7 +3,6 @@ import Base from '../../layouts/Base.astro'
 import BlockList from '../../blocks/BlockList.astro'
 import HeroMedia from '../../blocks/HeroMedia.astro'
 import { getSiteSettings, getNavPages, getPageBySlug } from '../../lib/payload.js'
-import { lexicalToHtml } from '../../lib/lexical.js'
 
 export function getStaticPaths() {
   return ['fr', 'es', 'en', 'de'].map((lang) => ({ params: { lang } }))
@@ -14,47 +13,28 @@ const { lang } = Astro.params
 let settings = null
 let navPages = []
 let page = null
-let cmsError = null
 try {
   settings = await getSiteSettings(lang)
   navPages = await getNavPages(lang)
   page = await getPageBySlug('accueil', lang)
 } catch (e) {
-  cmsError = e instanceof Error ? e.message : String(e)
+  // build tolérant
 }
 
 const siteName = settings?.siteName ?? 'NOÊMA'
-const tagline = settings?.tagline ?? ''
 const blocks = page?.layout ?? []
-
-// Le 1er bloc « hero » (s'il existe) passe en sur-impression de l'image de la home.
 const heroBlock = blocks[0]?.blockType === 'hero' ? blocks[0] : null
 const rest = heroBlock ? blocks.slice(1) : blocks
-const fallbackHtml = page?.content ? lexicalToHtml(page.content) : ''
 ---
 <Base lang={lang} isHome={true} currentSlug="accueil" title={siteName} settings={settings} navPages={navPages}>
   <HeroMedia
     image="/literature_cafe.jpg"
     eyebrow={heroBlock?.eyebrow}
     heading={heroBlock?.heading ?? siteName}
-    intro={heroBlock?.intro ?? tagline}
+    intro={heroBlock?.intro}
+    ctaLabel={heroBlock?.ctaLabel}
+    ctaHref={heroBlock?.ctaHref}
+    lang={lang}
   />
-
-  {rest.length > 0 ? (
-    <BlockList blocks={rest} lang={lang} />
-  ) : (
-    !heroBlock && (
-      <article class="prose">
-        <h1>{page?.title ?? siteName}</h1>
-        {page?.excerpt && <p class="lead">{page.excerpt}</p>}
-        <Fragment set:html={fallbackHtml} />
-        {cmsError && <p class="status">CMS injoignable : {cmsError}</p>}
-      </article>
-    )
-  )}
+  <BlockList blocks={rest} lang={lang} />
 </Base>
-
-<style>
-  .lead { font-family: var(--ff-display); font-size: var(--fs-h3); color: var(--c-charcoal-soft); }
-  .status { margin-block-start: 2rem; font-size: var(--fs-small); color: #9b3b2f; }
-</style>

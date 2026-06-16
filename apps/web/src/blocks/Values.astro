@@ -1,0 +1,38 @@
+---
+// Section Philosophie : 2 colonnes (intro à gauche, lignes de valeurs à droite).
+const { block } = Astro.props
+const rows = block.rows ?? []
+---
+<section class="values">
+  <div class="wrap grid" data-reveal>
+    <div class="lede">
+      {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
+      {block.heading && <h2>{block.heading}</h2>}
+      {block.intro && <p>{block.intro}</p>}
+    </div>
+    <div class="rows">
+      {rows.map((r) => (
+        <div class="line">
+          <span class="term">{r.term}</span>
+          {r.caption && <span class="cap">{r.caption}</span>}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .values { background: var(--c-cream); padding-block: var(--pad-y); }
+  .grid { display: grid; grid-template-columns: .42fr .58fr; gap: clamp(28px,5vw,80px); align-items: start; }
+  .eyebrow { color: var(--c-gold-deep); }
+  .lede h2 { font-size: var(--fs-h2); line-height: 1.04; color: var(--c-petrol-head); margin: 18px 0 0; max-inline-size: 13ch; }
+  .lede p { font-size: 15.5px; line-height: 1.75; color: var(--c-ink-soft); margin: 22px 0 0; max-inline-size: 38ch; }
+  .line {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 24px;
+    padding-block: 22px; border-block-start: 1px solid var(--c-line);
+  }
+  .line:last-child { border-block-end: 1px solid var(--c-line); }
+  .term { font-family: var(--ff-display); font-size: clamp(26px,3.2vw,42px); color: var(--c-petrol-head); }
+  .cap { font-size: 13.5px; color: var(--c-ink-mute); text-align: end; max-inline-size: 24ch; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; gap: 28px; } }
+</style>

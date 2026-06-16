@@ -1,0 +1,38 @@
+---
+// Section Fondatrice : portrait (ou emplacement), citation serif, signature script, rôle.
+const { block } = Astro.props
+const url = block.portrait?.url || null
+---
+<section class="founder">
+  <div class="wrap grid">
+    <div class={`portrait ${url ? '' : 'ph'}`} data-reveal>
+      {url ? <img src={url} alt={block.portrait?.alt ?? block.signatureName ?? ''} /> : <span class="cap">portrait — la fondatrice</span>}
+    </div>
+    <div class="text" data-reveal style="transition-delay:100ms">
+      {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
+      {block.quote && <p class="quote">{block.quote}</p>}
+      {block.signatureName && <div class="sig">{block.signatureName}</div>}
+      {block.role && <div class="role">{block.role}</div>}
+    </div>
+  </div>
+</section>
+
+<style>
+  .founder { background: var(--c-panel); padding-block: var(--pad-y); }
+  .grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(28px,5vw,72px); align-items: center; }
+  .portrait { position: relative; aspect-ratio: 4 / 5; border-radius: 6px; overflow: hidden; }
+  .portrait img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .portrait.ph {
+    border: 1px solid var(--c-line);
+    background:
+      linear-gradient(0deg, rgba(19,58,66,.05), rgba(19,58,66,.05)),
+      repeating-linear-gradient(135deg, rgba(19,58,66,.07) 0 1px, transparent 1px 11px),
+      var(--c-placeholder-2);
+  }
+  .portrait .cap { position: absolute; inset-inline-start: 18px; inset-block-end: 16px; font-family: var(--ff-mono); font-size: 11px; letter-spacing: .06em; color: rgba(19,58,66,.55); }
+  .eyebrow { color: var(--c-gold-deep); }
+  .quote { font-family: var(--ff-display); font-size: var(--fs-quote); line-height: 1.4; color: var(--c-petrol-head); margin: 18px 0 0; max-inline-size: 30ch; }
+  .sig { font-family: var(--ff-script); font-size: 46px; line-height: 1; color: #173A40; margin-block-start: 28px; }
+  .role { font-family: var(--ff-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--c-ink-mute); margin-block-start: 8px; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; gap: 28px; } }
+</style>

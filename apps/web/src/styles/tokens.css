@@ -1,58 +1,81 @@
-/* NOÊMA — design tokens (source : docs/specs/noema-spec.md §5).
-   Registre « chaleur éditoriale ». RTL-first : propriétés logiques uniquement. */
+/* NOÊMA — design tokens (charte Claude Design, handoff Noema-site.dc.html).
+   RTL-first : propriétés logiques uniquement dans les composants. */
 :root {
   /* Palette */
-  --c-ivory: #F6F2EA;
-  --c-stone: #E7E0D3;
-  --c-sand: #D8C9B0;
-  --c-petrol: #15333B;
-  --c-petrol-deep: #0F262C;
-  --c-charcoal: #2A2B29;
-  --c-charcoal-soft: #55564F;
-  --c-brass: #A6884F;
-  --c-brass-soft: #C2A973;
+  --c-cream: #FBF9F3;        /* fond principal (crème chaud) */
+  --c-panel: #F1EBDF;        /* surface alternative (section fondatrice) */
+  --c-placeholder: #E7E1D3;  /* aplats / emplacements image */
+  --c-placeholder-2: #E2DCCC;
+  --c-petrol: #133A42;       /* bande pétrole (services) */
+  --c-petrol-deep: #0F2D34;  /* footer / hero overlay */
+  --c-petrol-head: #15363B;  /* titres sur crème */
+  --c-ink: #1f2a2c;          /* texte courant */
+  --c-ink-soft: rgba(31, 42, 44, 0.7);
+  --c-ink-mute: rgba(31, 42, 44, 0.5);
+  --c-cream-text: #F4EFE2;   /* texte sur fond sombre */
+  --c-cream-text-2: #EDE7D8;
+  --c-cream-text-soft: rgba(241, 236, 221, 0.7);
+  --c-gold: #C9A86A;         /* or — accents, filets, strike */
+  --c-gold-light: #D8BE8A;   /* or clair (sur fond sombre) */
+  --c-gold-deep: #A98A5B;    /* or profond (eyebrows sur crème) */
+  --c-line: rgba(19, 58, 66, 0.16);   /* filets sur crème */
+  --c-line-dark: rgba(241, 236, 221, 0.18); /* filets sur sombre */
 
   /* Typographie */
-  --ff-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-  --ff-body: 'Inter', system-ui, -apple-system, sans-serif;
-  --fs-display: clamp(2.6rem, 6vw, 4.5rem);
-  --fs-h1: clamp(2rem, 4vw, 3rem);
-  --fs-h2: 2rem;
-  --fs-h3: 1.5rem;
-  --fs-body: 1.0625rem;
-  --fs-small: 0.875rem;
+  --ff-display: 'Cormorant Garamond', Georgia, serif;
+  --ff-body: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+  --ff-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --ff-script: 'Pinyon Script', cursive;
 
-  /* Rythme / largeurs */
-  --w-content: 72rem;
-  --w-prose: 42rem;
-  --space: 1.5rem;
+  --fs-hero: clamp(44px, 7.6vw, 108px);
+  --fs-h2: clamp(30px, 3.8vw, 54px);
+  --fs-h3: 28px;
+  --fs-quote: clamp(24px, 3vw, 40px);
+  --fs-body: 16px;
+  --fs-small: 13.5px;
+  --fs-eyebrow: 11px;
 
-  /* Structure de mise en page — indépendant de la charte (couleurs/polices) */
-  --header-h: 4.75rem;    /* hauteur de la barre de navigation supérieure */
-  --folio-w: 3.5rem;      /* colonne des folios (numéros de section en marge) */
-  --gutter: clamp(1.25rem, 3vw, 3rem);
-  --pad-x: clamp(1.5rem, 5vw, 5rem);  /* respiration horizontale (pleine largeur) */
-  --reveal-shift: 14px;   /* translation des éléments à l'apparition */
+  /* Layout */
+  --w-content: 1360px;
+  --pad-x: clamp(20px, 4vw, 56px);
+  --pad-y: clamp(64px, 9vw, 140px);
+  --header-h: 70px;
+  --reveal-shift: 20px;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-
+html, body { margin: 0; padding: 0; }
 html { -webkit-text-size-adjust: 100%; }
 
 body {
-  margin: 0;
-  background: var(--c-ivory);
-  color: var(--c-charcoal);
+  background: var(--c-cream);
+  color: var(--c-ink);
   font-family: var(--ff-body);
   font-size: var(--fs-body);
+  font-weight: 400;
   line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 
-h1, h2, h3 {
-  font-family: var(--ff-display);
-  line-height: 1.1;
-  font-weight: 500;
-  margin-block: 0 0.5em;
+::selection { background: var(--c-petrol); color: #F5F2EA; }
+a { color: inherit; text-decoration: none; }
+
+/* Conteneur pleine largeur avec mesure max (1360px) + respiration. */
+.wrap {
+  max-inline-size: var(--w-content);
+  margin-inline: auto;
+  padding-inline: var(--pad-x);
 }
 
-a { color: inherit; }
+/* Sur-titre mono réutilisable. */
+.eyebrow {
+  font-family: var(--ff-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-gold-deep);
+}
+
+h1, h2, h3 { font-family: var(--ff-display); font-weight: 500; margin: 0; }

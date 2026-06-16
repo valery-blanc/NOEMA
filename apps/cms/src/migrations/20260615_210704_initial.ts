@@ -49,6 +49,85 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"eyebrow" varchar,
   	"heading" varchar NOT NULL,
   	"intro" varchar,
+  	"cta_label" varchar,
+  	"cta_href" varchar,
+  	"block_name" varchar
+  );
+  
+  CREATE TABLE "pages_blocks_values_rows" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" varchar NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"term" varchar NOT NULL,
+  	"caption" varchar
+  );
+  
+  CREATE TABLE "pages_blocks_values" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"_path" text NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"eyebrow" varchar,
+  	"heading" varchar,
+  	"intro" varchar,
+  	"block_name" varchar
+  );
+  
+  CREATE TABLE "pages_blocks_services_items" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" varchar NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"title" varchar NOT NULL,
+  	"text" varchar
+  );
+  
+  CREATE TABLE "pages_blocks_services" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"_path" text NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"eyebrow" varchar,
+  	"heading" varchar,
+  	"block_name" varchar
+  );
+  
+  CREATE TABLE "pages_blocks_gallery_items" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" varchar NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"caption" varchar NOT NULL,
+  	"tag" varchar,
+  	"image_id" integer,
+  	"image_url" varchar
+  );
+  
+  CREATE TABLE "pages_blocks_gallery" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"_path" text NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"eyebrow" varchar,
+  	"heading" varchar,
+  	"block_name" varchar
+  );
+  
+  CREATE TABLE "pages_blocks_founder" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"_path" text NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"eyebrow" varchar,
+  	"quote" varchar NOT NULL,
+  	"signature_name" varchar,
+  	"role" varchar,
+  	"portrait_id" integer,
   	"block_name" varchar
   );
   
@@ -72,39 +151,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"id" varchar PRIMARY KEY NOT NULL,
   	"quote" varchar NOT NULL,
   	"attribution" varchar,
-  	"block_name" varchar
-  );
-  
-  CREATE TABLE "pages_blocks_index_list_entries" (
-  	"_order" integer NOT NULL,
-  	"_parent_id" varchar NOT NULL,
-  	"_locale" "_locales" NOT NULL,
-  	"id" varchar PRIMARY KEY NOT NULL,
-  	"label" varchar NOT NULL,
-  	"text" varchar
-  );
-  
-  CREATE TABLE "pages_blocks_index_list" (
-  	"_order" integer NOT NULL,
-  	"_parent_id" integer NOT NULL,
-  	"_path" text NOT NULL,
-  	"_locale" "_locales" NOT NULL,
-  	"id" varchar PRIMARY KEY NOT NULL,
-  	"section_title" varchar,
-  	"block_name" varchar
-  );
-  
-  CREATE TABLE "pages_blocks_signature" (
-  	"_order" integer NOT NULL,
-  	"_parent_id" integer NOT NULL,
-  	"_path" text NOT NULL,
-  	"_locale" "_locales" NOT NULL,
-  	"id" varchar PRIMARY KEY NOT NULL,
-  	"section_title" varchar,
-  	"name" varchar,
-  	"role" varchar,
-  	"bio" varchar,
-  	"portrait_id" integer,
   	"block_name" varchar
   );
   
@@ -172,6 +218,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TABLE "site_settings" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"contact_email" varchar,
+  	"domain" varchar,
   	"updated_at" timestamp(3) with time zone,
   	"created_at" timestamp(3) with time zone
   );
@@ -179,6 +226,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TABLE "site_settings_locales" (
   	"site_name" varchar DEFAULT 'NOÊMA' NOT NULL,
   	"tagline" varchar,
+  	"location" varchar,
   	"id" serial PRIMARY KEY NOT NULL,
   	"_locale" "_locales" NOT NULL,
   	"_parent_id" integer NOT NULL
@@ -186,12 +234,17 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   
   ALTER TABLE "users_sessions" ADD CONSTRAINT "users_sessions_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages_blocks_hero" ADD CONSTRAINT "pages_blocks_hero_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_blocks_values_rows" ADD CONSTRAINT "pages_blocks_values_rows_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages_blocks_values"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_blocks_values" ADD CONSTRAINT "pages_blocks_values_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_blocks_services_items" ADD CONSTRAINT "pages_blocks_services_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages_blocks_services"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_blocks_services" ADD CONSTRAINT "pages_blocks_services_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_blocks_gallery_items" ADD CONSTRAINT "pages_blocks_gallery_items_image_id_media_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "pages_blocks_gallery_items" ADD CONSTRAINT "pages_blocks_gallery_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages_blocks_gallery"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_blocks_gallery" ADD CONSTRAINT "pages_blocks_gallery_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_blocks_founder" ADD CONSTRAINT "pages_blocks_founder_portrait_id_media_id_fk" FOREIGN KEY ("portrait_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "pages_blocks_founder" ADD CONSTRAINT "pages_blocks_founder_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages_blocks_prose" ADD CONSTRAINT "pages_blocks_prose_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages_blocks_pullquote" ADD CONSTRAINT "pages_blocks_pullquote_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "pages_blocks_index_list_entries" ADD CONSTRAINT "pages_blocks_index_list_entries_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages_blocks_index_list"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "pages_blocks_index_list" ADD CONSTRAINT "pages_blocks_index_list_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "pages_blocks_signature" ADD CONSTRAINT "pages_blocks_signature_portrait_id_media_id_fk" FOREIGN KEY ("portrait_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "pages_blocks_signature" ADD CONSTRAINT "pages_blocks_signature_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages_blocks_cta" ADD CONSTRAINT "pages_blocks_cta_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages_locales" ADD CONSTRAINT "pages_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_preferences_rels" ADD CONSTRAINT "payload_preferences_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."payload_preferences"("id") ON DELETE cascade ON UPDATE no action;
@@ -209,6 +262,33 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "pages_blocks_hero_parent_id_idx" ON "pages_blocks_hero" USING btree ("_parent_id");
   CREATE INDEX "pages_blocks_hero_path_idx" ON "pages_blocks_hero" USING btree ("_path");
   CREATE INDEX "pages_blocks_hero_locale_idx" ON "pages_blocks_hero" USING btree ("_locale");
+  CREATE INDEX "pages_blocks_values_rows_order_idx" ON "pages_blocks_values_rows" USING btree ("_order");
+  CREATE INDEX "pages_blocks_values_rows_parent_id_idx" ON "pages_blocks_values_rows" USING btree ("_parent_id");
+  CREATE INDEX "pages_blocks_values_rows_locale_idx" ON "pages_blocks_values_rows" USING btree ("_locale");
+  CREATE INDEX "pages_blocks_values_order_idx" ON "pages_blocks_values" USING btree ("_order");
+  CREATE INDEX "pages_blocks_values_parent_id_idx" ON "pages_blocks_values" USING btree ("_parent_id");
+  CREATE INDEX "pages_blocks_values_path_idx" ON "pages_blocks_values" USING btree ("_path");
+  CREATE INDEX "pages_blocks_values_locale_idx" ON "pages_blocks_values" USING btree ("_locale");
+  CREATE INDEX "pages_blocks_services_items_order_idx" ON "pages_blocks_services_items" USING btree ("_order");
+  CREATE INDEX "pages_blocks_services_items_parent_id_idx" ON "pages_blocks_services_items" USING btree ("_parent_id");
+  CREATE INDEX "pages_blocks_services_items_locale_idx" ON "pages_blocks_services_items" USING btree ("_locale");
+  CREATE INDEX "pages_blocks_services_order_idx" ON "pages_blocks_services" USING btree ("_order");
+  CREATE INDEX "pages_blocks_services_parent_id_idx" ON "pages_blocks_services" USING btree ("_parent_id");
+  CREATE INDEX "pages_blocks_services_path_idx" ON "pages_blocks_services" USING btree ("_path");
+  CREATE INDEX "pages_blocks_services_locale_idx" ON "pages_blocks_services" USING btree ("_locale");
+  CREATE INDEX "pages_blocks_gallery_items_order_idx" ON "pages_blocks_gallery_items" USING btree ("_order");
+  CREATE INDEX "pages_blocks_gallery_items_parent_id_idx" ON "pages_blocks_gallery_items" USING btree ("_parent_id");
+  CREATE INDEX "pages_blocks_gallery_items_locale_idx" ON "pages_blocks_gallery_items" USING btree ("_locale");
+  CREATE INDEX "pages_blocks_gallery_items_image_idx" ON "pages_blocks_gallery_items" USING btree ("image_id");
+  CREATE INDEX "pages_blocks_gallery_order_idx" ON "pages_blocks_gallery" USING btree ("_order");
+  CREATE INDEX "pages_blocks_gallery_parent_id_idx" ON "pages_blocks_gallery" USING btree ("_parent_id");
+  CREATE INDEX "pages_blocks_gallery_path_idx" ON "pages_blocks_gallery" USING btree ("_path");
+  CREATE INDEX "pages_blocks_gallery_locale_idx" ON "pages_blocks_gallery" USING btree ("_locale");
+  CREATE INDEX "pages_blocks_founder_order_idx" ON "pages_blocks_founder" USING btree ("_order");
+  CREATE INDEX "pages_blocks_founder_parent_id_idx" ON "pages_blocks_founder" USING btree ("_parent_id");
+  CREATE INDEX "pages_blocks_founder_path_idx" ON "pages_blocks_founder" USING btree ("_path");
+  CREATE INDEX "pages_blocks_founder_locale_idx" ON "pages_blocks_founder" USING btree ("_locale");
+  CREATE INDEX "pages_blocks_founder_portrait_idx" ON "pages_blocks_founder" USING btree ("portrait_id");
   CREATE INDEX "pages_blocks_prose_order_idx" ON "pages_blocks_prose" USING btree ("_order");
   CREATE INDEX "pages_blocks_prose_parent_id_idx" ON "pages_blocks_prose" USING btree ("_parent_id");
   CREATE INDEX "pages_blocks_prose_path_idx" ON "pages_blocks_prose" USING btree ("_path");
@@ -217,18 +297,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "pages_blocks_pullquote_parent_id_idx" ON "pages_blocks_pullquote" USING btree ("_parent_id");
   CREATE INDEX "pages_blocks_pullquote_path_idx" ON "pages_blocks_pullquote" USING btree ("_path");
   CREATE INDEX "pages_blocks_pullquote_locale_idx" ON "pages_blocks_pullquote" USING btree ("_locale");
-  CREATE INDEX "pages_blocks_index_list_entries_order_idx" ON "pages_blocks_index_list_entries" USING btree ("_order");
-  CREATE INDEX "pages_blocks_index_list_entries_parent_id_idx" ON "pages_blocks_index_list_entries" USING btree ("_parent_id");
-  CREATE INDEX "pages_blocks_index_list_entries_locale_idx" ON "pages_blocks_index_list_entries" USING btree ("_locale");
-  CREATE INDEX "pages_blocks_index_list_order_idx" ON "pages_blocks_index_list" USING btree ("_order");
-  CREATE INDEX "pages_blocks_index_list_parent_id_idx" ON "pages_blocks_index_list" USING btree ("_parent_id");
-  CREATE INDEX "pages_blocks_index_list_path_idx" ON "pages_blocks_index_list" USING btree ("_path");
-  CREATE INDEX "pages_blocks_index_list_locale_idx" ON "pages_blocks_index_list" USING btree ("_locale");
-  CREATE INDEX "pages_blocks_signature_order_idx" ON "pages_blocks_signature" USING btree ("_order");
-  CREATE INDEX "pages_blocks_signature_parent_id_idx" ON "pages_blocks_signature" USING btree ("_parent_id");
-  CREATE INDEX "pages_blocks_signature_path_idx" ON "pages_blocks_signature" USING btree ("_path");
-  CREATE INDEX "pages_blocks_signature_locale_idx" ON "pages_blocks_signature" USING btree ("_locale");
-  CREATE INDEX "pages_blocks_signature_portrait_idx" ON "pages_blocks_signature" USING btree ("portrait_id");
   CREATE INDEX "pages_blocks_cta_order_idx" ON "pages_blocks_cta" USING btree ("_order");
   CREATE INDEX "pages_blocks_cta_parent_id_idx" ON "pages_blocks_cta" USING btree ("_parent_id");
   CREATE INDEX "pages_blocks_cta_path_idx" ON "pages_blocks_cta" USING btree ("_path");
@@ -256,11 +324,15 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "users" CASCADE;
   DROP TABLE "media" CASCADE;
   DROP TABLE "pages_blocks_hero" CASCADE;
+  DROP TABLE "pages_blocks_values_rows" CASCADE;
+  DROP TABLE "pages_blocks_values" CASCADE;
+  DROP TABLE "pages_blocks_services_items" CASCADE;
+  DROP TABLE "pages_blocks_services" CASCADE;
+  DROP TABLE "pages_blocks_gallery_items" CASCADE;
+  DROP TABLE "pages_blocks_gallery" CASCADE;
+  DROP TABLE "pages_blocks_founder" CASCADE;
   DROP TABLE "pages_blocks_prose" CASCADE;
   DROP TABLE "pages_blocks_pullquote" CASCADE;
-  DROP TABLE "pages_blocks_index_list_entries" CASCADE;
-  DROP TABLE "pages_blocks_index_list" CASCADE;
-  DROP TABLE "pages_blocks_signature" CASCADE;
   DROP TABLE "pages_blocks_cta" CASCADE;
   DROP TABLE "pages" CASCADE;
   DROP TABLE "pages_locales" CASCADE;

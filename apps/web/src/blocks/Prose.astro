@@ -1,15 +1,23 @@
 ---
-import { fmtFolio } from '../lib/toc.js'
 import { lexicalToHtml } from '../lib/lexical.js'
-
-const { block, id, folio } = Astro.props
+const { block } = Astro.props
 const html = block.body ? lexicalToHtml(block.body) : ''
 ---
-<section class="section" id={id} data-section={folio ? id : undefined} data-reveal>
-  <div class="folio" aria-hidden="true">{fmtFolio(folio)}</div>
-  <div class="main">
-    {block.sectionTitle && <h2>{block.sectionTitle}</h2>}
+<section class="prose-sec" data-reveal>
+  <div class="wrap grid">
+    <div class="aside">
+      {block.sectionTitle && <h2>{block.sectionTitle}</h2>}
+      {block.note && <p class="note">{block.note}</p>}
+    </div>
     <div class="prose" set:html={html} />
   </div>
-  {block.note && <aside class="note">{block.note}</aside>}
 </section>
+
+<style>
+  .prose-sec { background: var(--c-cream); padding-block: clamp(32px,5vw,64px); }
+  .grid { display: grid; grid-template-columns: .35fr .65fr; gap: clamp(28px,5vw,72px); align-items: start; }
+  .aside h2 { font-size: clamp(26px,3vw,40px); color: var(--c-petrol-head); margin: 0; max-inline-size: 14ch; }
+  .note { font-family: var(--ff-mono); font-size: 12px; line-height: 1.7; color: var(--c-ink-mute); margin: 18px 0 0; max-inline-size: 28ch; border-inline-start: 1px solid var(--c-gold); padding-inline-start: 12px; }
+  .prose :global(p) { font-size: 16px; line-height: 1.75; color: var(--c-ink-soft); margin: 0 0 1.2em; max-inline-size: 60ch; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; gap: 20px; } }
+</style>

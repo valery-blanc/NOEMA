@@ -85,8 +85,8 @@
 - [x] Seed contenu d'exemple FR (design) traduit ES/EN/DE ; SiteSettings (tagline/domain/location)
 - [x] DB reset + migration `initial` + types/importmap
 - [x] Build/run Tulear OK : design rendu fidèle, méga-menu, i18n, 20 pages 200
-- [~] Déploiement Avignon (reset DB + migrate + seed + régénération) → en cours
-- [ ] Demander test à Val (rendu, méga-menu, strike, hero, 4 langues)
+- [x] Déploiement Avignon (reset DB + migrate + seed + régénération) — OK, design live, FR/ES/EN/DE, 20 pages 200
+- [~] Test/validation Val (rendu, méga-menu, strike, hero, 4 langues) → en attente
 
 ## Backlog (FEAT suivants)
 - [ ] Contenu réel (remplacer l'exemple) + photos + SEO + formulaire contact

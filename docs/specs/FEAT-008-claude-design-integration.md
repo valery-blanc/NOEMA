@@ -1,6 +1,7 @@
 # FEAT-008 — Intégration du design Claude Design (Noema-site.dc.html) + i18n 4 langues
 
-> Statut : **implémenté (Tulear), en cours de déploiement Avignon**
+> Statut : **déployé sur Avignon — en attente de validation Val**
+> Live : https://noema.zitoon.com (FR/ES/EN/DE) · aperçu https://noema-preview.zitoon.com
 > Date : 2026-06-16
 > Demande Val : reprendre le design produit dans Claude Design (`Noema-site.dc.html`),
 > le câbler au CMS, garder le contenu d'exemple (pas de contenu définitif), traduire en 4 langues.

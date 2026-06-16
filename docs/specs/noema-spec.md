@@ -302,6 +302,10 @@ seules les variables d'environnement et le domaine changent.
 - **FEAT-001** (2026-06-15) — Fondations : choix de stack, architecture, navigation, design
   system (palette, typo, rythme), i18n/RTL, modèle de contenu. Registre visuel « chaleur
   éditoriale » validé (sites de référence observés ; pétrole en accent rare). Conception validée.
+- **FEAT-010** (2026-06-16) — Photos éditables depuis l'admin : bibliothèque **Media** persistée
+  (volume `media_data`) et **servie sur le site statique** (`/media/<filename>` : volume monté en
+  lecture dans le `publisher`, copié par astro). Champ **image** sur le bloc Hero (fond home) ;
+  portraits (Fondatrice, À propos) et galerie lisent l'upload. Volume possédé par `nextjs` (BUG-005).
 - **FEAT-009** (2026-06-16) — Pages intérieures **Philosophie / Services / À propos / Contact**
   (2ᵉ handoff Claude Design), pilotées CMS et traduites FR/ES/EN/DE. Nouveaux blocs : `statement`,
   `manifesto` (I·II·III·IV), `serviceDetail` (tags + image), `steps`, `milestones`, `story`,

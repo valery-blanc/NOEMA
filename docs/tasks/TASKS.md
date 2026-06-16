@@ -100,6 +100,13 @@
 - [x] Décision infra (Val 2026-06-16) : build/test sur **Avignon** via aperçu, **Tulear sorti de la boucle** (infra.md MAJ)
 - [~] Re-validation Val (Contact pétrole + À propos)
 
+### FEAT-010 — Photos éditables depuis l'admin
+- [x] Media persisté (volume media_data) + servi sur le statique (/media/<filename>)
+- [x] Bloc Hero : champ image (fond home) ; portraits founder/à-propos + galerie lisent l'upload
+- [x] FIX BUG-005 : volume média possédé par nextjs (uploads sinon Permission denied)
+- [x] Déploiement Avignon + pipeline média vérifié de bout en bout (HTTP 200 sur /media/…)
+- [ ] Demander test à Val (uploader une photo dans l'admin → Aperçu → Publier)
+
 ## Backlog (FEAT suivants)
 - [ ] Envoi e-mail serveur du formulaire (endpoint Payload + SMTP) au lieu du mailto
 - [ ] Contenu réel (remplacer l'exemple) + vraies photos + SEO

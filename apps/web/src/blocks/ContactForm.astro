@@ -1,59 +1,60 @@
 ---
-// Contact : formulaire + coordonnées. Site statique → l'envoi compose un courriel (mailto)
-// pré-rempli vers contactEmail (pas de backend). L'envoi SMTP serveur viendra ensuite.
+// Contact : page pétrole pleine hauteur. Formulaire à champs soulignés (transparents),
+// bouton or, coordonnées à droite (filet). Site statique → envoi via mailto pré-rempli.
 const { block, contactEmail = 'bonjour@noema.ch' } = Astro.props
 const opts = (block.projectOptions ?? []).map((o) => o.label)
 ---
 <section class="contact">
-  <div class="wrap grid">
-    <div class="intro" data-reveal>
-      {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
-      {block.heading && <h1>{block.heading}</h1>}
-      {block.intro && <p>{block.intro}</p>}
+  <div class="wrap" data-reveal>
+    {block.eyebrow && <div class="eyebrow gold">{block.eyebrow}</div>}
+    {block.heading && <h1>{block.heading}</h1>}
+    {block.intro && <p class="intro">{block.intro}</p>}
 
-      <div class="coords">
+    <div class="cols">
+      <form class="form" data-contact-form data-email={contactEmail}>
+        <label class="half">
+          <span>{block.nameLabel ?? 'Nom'}</span>
+          <input type="text" name="name" placeholder="Votre nom" required />
+        </label>
+        <label class="half">
+          <span>{block.emailLabel ?? 'Courriel'}</span>
+          <input type="email" name="email" placeholder="vous@exemple.ch" required />
+        </label>
+        <label class="full">
+          <span>{block.projectLabel ?? 'Votre projet'}</span>
+          <div class="selectwrap">
+            <select name="project">{opts.map((o) => <option value={o}>{o}</option>)}</select>
+            <span class="caret" aria-hidden="true">▾</span>
+          </div>
+        </label>
+        <label class="full">
+          <span>{block.messageLabel ?? 'Message'}</span>
+          <textarea name="message" rows="4" placeholder={block.messagePlaceholder ?? 'Dites-moi quelques mots…'} required></textarea>
+        </label>
+        <div class="full submit">
+          <button type="submit">{block.submitLabel ?? 'Envoyer le message'}</button>
+        </div>
+      </form>
+
+      <aside class="coords">
         <div class="co">
-          <span class="k">{block.writeLabel ?? 'Écrire'}</span>
-          <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+          <div class="k">{block.writeLabel ?? 'Écrire'}</div>
+          <a href={`mailto:${contactEmail}`} class="big">{contactEmail}</a>
         </div>
         <div class="co">
-          <span class="k">{block.meetLabel ?? 'Rencontrer'}</span>
-          <span>{block.meetLocation}</span>
-          {block.meetNote && <span class="sub">{block.meetNote}</span>}
+          <div class="k">{block.meetLabel ?? 'Rencontrer'}</div>
+          <p class="big">{block.meetLocation}{block.meetNote && <><br /><span class="it">{block.meetNote}</span></>}</p>
         </div>
         <div class="co">
-          <span class="k">{block.langsLabel ?? 'Langues'}</span>
-          <span>{block.langsValue}</span>
+          <div class="k">{block.langsLabel ?? 'Langues'}</div>
+          <p class="langs">{block.langsValue}</p>
         </div>
-      </div>
+      </aside>
     </div>
-
-    <form class="form" data-reveal data-contact-form data-email={contactEmail}>
-      <label>
-        <span>{block.nameLabel ?? 'Nom'}</span>
-        <input type="text" name="name" placeholder="Votre nom" required />
-      </label>
-      <label>
-        <span>{block.emailLabel ?? 'Courriel'}</span>
-        <input type="email" name="email" placeholder="vous@exemple.ch" required />
-      </label>
-      <label>
-        <span>{block.projectLabel ?? 'Votre projet'}</span>
-        <select name="project">
-          {opts.map((o) => <option value={o}>{o}</option>)}
-        </select>
-      </label>
-      <label>
-        <span>{block.messageLabel ?? 'Message'}</span>
-        <textarea name="message" rows="5" placeholder={block.messagePlaceholder ?? 'Dites-moi quelques mots…'} required></textarea>
-      </label>
-      <button type="submit">{block.submitLabel ?? 'Envoyer le message'}</button>
-    </form>
   </div>
 </section>
 
 <script>
-  // Envoi sans backend : compose un courriel pré-rempli (mailto).
   document.querySelectorAll('[data-contact-form]').forEach((form) => {
     form.addEventListener('submit', (e) => {
       e.preventDefault()
@@ -67,32 +68,42 @@ const opts = (block.projectOptions ?? []).map((o) => o.label)
 </script>
 
 <style>
-  .contact { background: var(--c-cream); padding-block: calc(var(--header-h) + clamp(48px,8vw,110px)) var(--pad-y); }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px,6vw,90px); align-items: start; }
-  .eyebrow { color: var(--c-gold-deep); }
-  .intro h1 { font-size: clamp(38px,5.4vw,80px); line-height: 1; color: var(--c-petrol-head); margin: .2em 0 0; max-inline-size: 14ch; }
-  .intro > p { font-size: 16.5px; line-height: 1.7; color: var(--c-ink-soft); max-inline-size: 46ch; margin: 24px 0 0; }
-  .coords { margin-block-start: clamp(36px,5vw,56px); display: grid; gap: 22px; }
-  .co { display: grid; gap: 4px; border-block-start: 1px solid var(--c-line); padding-block-start: 14px; }
-  .co .k { font-family: var(--ff-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--c-gold-deep); }
-  .co a, .co span:not(.k):not(.sub) { font-family: var(--ff-display); font-size: 22px; color: var(--c-petrol-head); }
-  .co .sub { font-size: 13px; color: var(--c-ink-mute); }
+  .contact { background: var(--c-petrol); color: var(--c-cream-text-2); padding-block: calc(var(--header-h) + clamp(56px,9vw,120px)) clamp(64px,9vw,120px); min-block-size: 100vh; }
+  .eyebrow.gold { color: var(--c-gold-light); letter-spacing: .24em; }
+  .contact h1 { font-family: var(--ff-display); font-weight: 500; font-size: clamp(42px,6.4vw,92px); line-height: 1; color: #F6F1E6; margin: .22em 0 0; max-inline-size: 15ch; text-wrap: balance; }
+  .intro { font-size: 16.5px; line-height: 1.7; color: rgba(237,231,216,.78); margin: 24px 0 0; max-inline-size: 48ch; }
 
-  .form { display: grid; gap: 20px; }
-  .form label { display: grid; gap: 8px; }
-  .form label span { font-family: var(--ff-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--c-ink-mute); }
+  .cols { display: grid; grid-template-columns: 1.25fr .75fr; gap: clamp(36px,6vw,96px); margin-block-start: clamp(48px,6vw,84px); align-items: start; }
+  .form { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px,2.6vw,34px); }
+  .form .full { grid-column: 1 / -1; }
+  .form label { display: flex; flex-direction: column; gap: 9px; }
+  .form label > span { font-family: var(--ff-mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: rgba(237,231,216,.5); }
   .form input, .form select, .form textarea {
-    inline-size: 100%; padding: 14px 16px; border: 1px solid var(--c-line); border-radius: 4px;
-    background: #fff; color: var(--c-ink); font-family: var(--ff-body); font-size: 15px;
+    background: transparent; border: none; border-block-end: 1px solid rgba(237,231,216,.28);
+    color: #F4EFE2; font-family: var(--ff-body); font-size: 16px; padding: 10px 0; transition: border-color .4s;
   }
-  .form input:focus, .form select:focus, .form textarea:focus { outline: none; border-color: var(--c-gold); }
+  .form input::placeholder, .form textarea::placeholder { color: rgba(237,231,216,.4); }
+  .form input:focus, .form select:focus, .form textarea:focus { outline: none; border-block-end-color: var(--c-gold); }
   .form textarea { resize: vertical; }
+  .selectwrap { position: relative; }
+  .selectwrap select { inline-size: 100%; cursor: pointer; appearance: none; }
+  .selectwrap select option { color: #0F2D34; }
+  .selectwrap .caret { position: absolute; inset-inline-end: 2px; inset-block-start: 12px; pointer-events: none; color: rgba(237,231,216,.5); font-size: 11px; }
+  .submit { margin-block-start: 6px; }
   .form button {
-    justify-self: start; margin-block-start: 6px; padding: 15px 30px; border: none; border-radius: 40px;
-    background: var(--c-petrol); color: var(--c-cream-text);
-    font-family: var(--ff-mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; cursor: pointer;
-    transition: background .4s;
+    display: inline-flex; align-items: center; gap: 12px; padding: 15px 30px;
+    border: 1px solid var(--c-gold); background: var(--c-gold); border-radius: 40px;
+    font-family: var(--ff-mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--c-petrol-deep);
+    cursor: pointer; transition: background .4s, color .4s;
   }
-  .form button:hover { background: var(--c-gold-deep); }
-  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+  .form button:hover { background: transparent; color: #F4EFE2; }
+
+  .coords { display: flex; flex-direction: column; gap: 34px; border-inline-start: 1px solid rgba(237,231,216,.16); padding-inline-start: clamp(24px,3vw,48px); }
+  .co .k { font-family: var(--ff-mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--c-gold-light); margin-block-end: 12px; }
+  .co .big { font-family: var(--ff-display); font-size: 24px; color: #F4EFE2; margin: 0; line-height: 1.4; }
+  .co a.big:hover { color: var(--c-gold-light); }
+  .co .it { color: rgba(237,231,216,.6); font-size: 18px; font-style: italic; }
+  .co .langs { font-family: var(--ff-mono); font-size: 13px; letter-spacing: .08em; color: rgba(237,231,216,.72); margin: 0; }
+
+  @media (max-width: 860px) { .cols { grid-template-columns: 1fr; } .form { grid-template-columns: 1fr; } .coords { border-inline-start: none; padding-inline-start: 0; border-block-start: 1px solid rgba(237,231,216,.16); padding-block-start: 28px; } }
 </style>

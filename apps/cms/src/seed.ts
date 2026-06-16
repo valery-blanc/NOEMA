@@ -343,7 +343,7 @@ const layoutFor = (slug: string, l: Locale): any[] => {
       ]
     case 'a-propos':
       return [
-        { blockType: 'hero', variant: 'cream', eyebrow: D.title['a-propos'][l], heading: D.about.heroTitle[l], intro: D.about.heroIntro[l], portraitCaption: D.about.portraitCap[l], comingSoon: D.home.comingSoon[l] },
+        { blockType: 'hero', variant: 'petrol', eyebrow: D.title['a-propos'][l], heading: D.about.heroTitle[l], intro: D.about.heroIntro[l], portraitCaption: D.about.portraitCap[l], comingSoon: D.home.comingSoon[l] },
         { blockType: 'story', eyebrow: D.about.storyEyebrow[l], body: rt(D.about.story.map((p) => p[l])), signatureName: D.home.founderName[l], role: D.home.founderRole[l] },
         { blockType: 'milestones', heading: D.about.msHeading[l], items: D.about.milestones.map((m) => ({ tag: m.tag[l], title: m.title[l], text: m.text[l] })) },
         { blockType: 'cta', variant: 'inline', heading: D.about.ctaText[l], buttonLabel: D.about.ctaBtn[l], buttonHref: `/${l}/contact/` },

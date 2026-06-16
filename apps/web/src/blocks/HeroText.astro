@@ -48,7 +48,13 @@ const hasPortrait = portrait !== null || block.comingSoon || block.portraitCapti
     border: 1px solid var(--c-line);
     background: linear-gradient(0deg, rgba(19,58,66,.05), rgba(19,58,66,.05)), repeating-linear-gradient(135deg, rgba(19,58,66,.07) 0 1px, transparent 1px 11px), var(--c-placeholder-2);
   }
+  /* Emplacement photo sur fond pétrole (À propos) */
+  .petrol .portrait.ph {
+    border-color: rgba(241,236,221,.2);
+    background: linear-gradient(0deg, rgba(0,0,0,.14), rgba(0,0,0,.14)), repeating-linear-gradient(135deg, rgba(237,231,216,.08) 0 1px, transparent 1px 12px), #143A42;
+  }
   .portrait .cap { position: absolute; inset-inline-start: 18px; inset-block-end: 16px; font-family: var(--ff-mono); font-size: 11px; color: rgba(19,58,66,.55); }
+  .petrol .portrait .cap { color: rgba(237,231,216,.7); }
   .portrait .soon { position: absolute; inset-inline-end: 16px; inset-block-start: 14px; font-family: var(--ff-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: rgba(169,138,91,.95); }
   @media (max-width: 860px) { .herotext.with-portrait .grid { grid-template-columns: 1fr; } }
 </style>

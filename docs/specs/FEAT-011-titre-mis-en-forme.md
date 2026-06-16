@@ -11,28 +11,33 @@
 Les blocs **richText** (bloc *Texte*, récit À propos, conviction Philosophie) ont un éditeur
 visuel : **gras, italique, titres, listes, liens, retours à la ligne** (sérialisés en HTML).
 
-## Ajout (bloc Hero)
+## Approche retenue : petits tags dans le texte (pas de richText)
 
-- **Titre mis en forme** (`headingRich`, richText) : permet **italique / gras / retour à la
-  ligne** dans le grand titre (ex. une citation). Prioritaire sur le « Titre simple » s'il est
-  rempli. Rendu *inline* (les retours à la ligne deviennent des `<br>`).
-- **Attribution** (`attribution`, texte) : ligne **plus petite** sous le titre (ex. l'auteur de
-  la citation), en capitales espacées dorées.
-- **Intro** : les **retours à la ligne** saisis sont désormais respectés (`white-space: pre-line`).
+L'éditeur richText cassait le style (caractères noirs, toolbar) et le grand titre était trop
+gros pour une citation. → On garde un **champ texte simple** pour le titre/intro, qui accepte
+un **petit jeu de tags** rendus avec le bon style :
 
-Appliqué au hero **home** (HeroMedia) et aux hero **de pages intérieures** (HeroText).
+- `<i>…</i>` (ou `<em>`) → italique
+- `<b>…</b>` (ou `<strong>`) → gras
+- `<small>…</small>` → **plus petit, même police serif, blanc, juste en dessous** (ligne auteur)
+- `<br/>` → saut de ligne
+
+Tout autre tag est **échappé** (allowlist sûre, `lib/inline.js`). Appliqué au hero **home**
+(HeroMedia) et **pages intérieures** (HeroText), sur `heading` et `intro`.
+
+Taille du titre **réduite** (clamp ~32→60px home, mesure élargie à ~24ch) pour qu'une citation
+tienne élégamment.
 
 ## Comment faire la citation (admin)
 
-Accueil → bloc **Hero** :
-1. Vider/ignorer « Titre simple », remplir **« Titre mis en forme »** avec la citation et
-   passer le texte en **italique** (bouton *I* de l'éditeur).
-2. Renseigner **« Attribution »** avec l'auteur (s'affiche plus petit dessous).
-3. Save → Aperçu → Publier.
+Accueil → bloc **Hero** → champ **Titre** :
+```
+<i>« J'ai toujours imaginé le paradis comme une sorte de bibliothèque »</i><br/><small>Jorge Luis Borges</small>
+```
+Save → Aperçu → Publier.
 
 ## Technique
 
-- `lexicalToInlineHtml()` / `lexicalHasContent()` : rendu inline du richText (sans `<p>`).
-- **Migration incrémentale** `20260616_120000_add_hero_rich` (ajout colonnes `heading_rich`
-  jsonb + `attribution` varchar sur `pages_blocks_hero`) — **additive, sans perte** : déploiement
-  `payload migrate` sans reset ni re-seed (préserve le contenu/les photos déjà saisis).
+- `lib/inline.js` : `inlineTags()` — échappe puis restaure l'allowlist `i/em/b/strong/small/u/br`.
+- Migrations incrémentales (sans reset) : `…120000_add_hero_rich` (colonnes ajoutées) puis
+  `…130000_drop_hero_rich` (retirées, vides) — le richText est abandonné. Contenu/photos préservés.

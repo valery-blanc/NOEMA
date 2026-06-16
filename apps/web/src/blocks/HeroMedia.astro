@@ -1,10 +1,11 @@
 ---
-// Hero pleine page (home) — image de fond, haut flouté + dégradés pétrole, titre serif
-// (texte simple OU mis en forme : citation italique), attribution plus petite, intro, bouton.
-import { lexicalToInlineHtml, lexicalHasContent } from '../lib/lexical.js'
-const { image = '/literature_cafe.jpg', eyebrow, heading, headingRich, attribution, intro, ctaLabel, ctaHref, lang = 'fr' } = Astro.props
+// Hero pleine page (home) — image de fond, haut flouté + dégradés pétrole.
+// Titre : texte avec petit jeu de tags (<i> <b> <small> <br/>) → citation possible.
+import { inlineTags } from '../lib/inline.js'
+const { image = '/literature_cafe.jpg', eyebrow, heading, intro, ctaLabel, ctaHref, lang = 'fr' } = Astro.props
 const scroll = { fr: 'Défiler', es: 'Desplazar', en: 'Scroll', de: 'Scrollen' }[lang] ?? 'Défiler'
-const headingHtml = lexicalHasContent(headingRich) ? lexicalToInlineHtml(headingRich) : null
+const headingHtml = inlineTags(heading)
+const introHtml = inlineTags(intro)
 ---
 <section class="hero">
   <img class="bg" src={image} alt="" aria-hidden="true" />
@@ -17,10 +18,9 @@ const headingHtml = lexicalHasContent(headingRich) ? lexicalToInlineHtml(heading
   <div class="content" data-reveal>
     <div class="wrap">
       {eyebrow && <div class="eyebrow loc">{eyebrow}</div>}
-      {headingHtml ? <h1 set:html={headingHtml} /> : heading && <h1>{heading}</h1>}
-      {attribution && <p class="attribution">{attribution}</p>}
+      {heading && <h1 set:html={headingHtml} />}
       <div class="row">
-        {intro && <p class="intro">{intro}</p>}
+        {intro && <p class="intro" set:html={introHtml} />}
         {ctaLabel && <a class="cta" href={ctaHref || '#'}>{ctaLabel}</a>}
       </div>
     </div>
@@ -51,18 +51,21 @@ const headingHtml = lexicalHasContent(headingRich) ? lexicalToInlineHtml(heading
   .content { position: absolute; inset-inline: 0; inset-block-end: clamp(48px, 7vw, 104px); }
   .loc { letter-spacing: .24em; color: var(--c-gold-light); }
   .hero h1 {
-    font-family: var(--ff-display); font-weight: 500; font-size: var(--fs-hero);
-    line-height: .98; letter-spacing: -.005em; color: #F6F1E6;
-    margin: .26em 0 0; max-inline-size: 17ch; text-wrap: balance;
+    font-family: var(--ff-display); font-weight: 500;
+    font-size: clamp(32px, 4.6vw, 60px); line-height: 1.08; letter-spacing: -.005em;
+    color: #F6F1E6; margin: .3em 0 0; max-inline-size: 24ch; text-wrap: balance;
   }
-  .hero h1 :global(em) { font-style: italic; }
-  .hero h1 :global(strong) { font-weight: 600; }
-  .attribution {
-    font-family: var(--ff-mono); font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
-    color: var(--c-gold-light); margin: 18px 0 0;
+  .hero h1 :global(i), .hero h1 :global(em) { font-style: italic; }
+  .hero h1 :global(b), .hero h1 :global(strong) { font-weight: 600; }
+  /* Ligne « auteur » : même police serif, blanc, un peu plus petit, juste en dessous. */
+  .hero h1 :global(small) {
+    display: block; font-style: normal; font-weight: 500;
+    font-size: .42em; color: #F6F1E6; opacity: .9;
+    letter-spacing: .02em; margin-block-start: .55em;
   }
   .row { display: flex; flex-wrap: wrap; align-items: center; gap: clamp(18px,3vw,40px); margin-block-start: clamp(22px,3vw,38px); max-inline-size: 760px; }
-  .intro { font-size: 16.5px; line-height: 1.7; color: rgba(246,241,230,.86); margin: 0; max-inline-size: 46ch; white-space: pre-line; }
+  .intro { font-size: 16.5px; line-height: 1.7; color: rgba(246,241,230,.86); margin: 0; max-inline-size: 46ch; }
+  .intro :global(i), .intro :global(em) { font-style: italic; }
   .cta {
     display: inline-flex; align-items: center; gap: 12px; padding: 15px 26px;
     border: 1px solid rgba(216,190,138,.85); border-radius: 40px;

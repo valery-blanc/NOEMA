@@ -1,20 +1,20 @@
 ---
 // Hero de page intérieure — variante crème ou pétrole, portrait optionnel (À propos).
 import { mediaUrl } from '../lib/media.js'
-import { lexicalToInlineHtml, lexicalHasContent } from '../lib/lexical.js'
+import { inlineTags } from '../lib/inline.js'
 const { block } = Astro.props
 const variant = block.variant === 'petrol' ? 'petrol' : 'cream'
 const portrait = mediaUrl(block.portrait, block.portraitUrl)
-const headingHtml = lexicalHasContent(block.headingRich) ? lexicalToInlineHtml(block.headingRich) : null
+const headingHtml = inlineTags(block.heading)
+const introHtml = inlineTags(block.intro)
 const hasPortrait = portrait !== null || block.comingSoon || block.portraitCaption
 ---
 <section class={`herotext ${variant} ${hasPortrait ? 'with-portrait' : ''}`} data-reveal>
   <div class="wrap grid">
     <div class="text">
       {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
-      {headingHtml ? <h1 set:html={headingHtml} /> : block.heading && <h1>{block.heading}</h1>}
-      {block.attribution && <p class="attribution">{block.attribution}</p>}
-      {block.intro && <p class="intro-p">{block.intro}</p>}
+      {block.heading && <h1 set:html={headingHtml} />}
+      {block.intro && <p class="intro-p" set:html={introHtml} />}
       {block.ctaLabel && block.ctaHref && <a class="cta" href={block.ctaHref}>{block.ctaLabel}</a>}
     </div>
     {hasPortrait && (
@@ -34,15 +34,14 @@ const hasPortrait = portrait !== null || block.comingSoon || block.portraitCapti
   .herotext.with-portrait .grid { grid-template-columns: 1fr .8fr; }
   .eyebrow { color: var(--c-gold-deep); }
   .petrol .eyebrow { color: var(--c-gold-light); }
-  .herotext h1 { font-family: var(--ff-display); font-weight: 500; font-size: clamp(42px,6.4vw,92px); line-height: 1; margin: .26em 0 0; max-inline-size: 16ch; text-wrap: balance; }
-  .herotext h1 :global(em) { font-style: italic; }
-  .herotext h1 :global(strong) { font-weight: 600; }
+  .herotext h1 { font-family: var(--ff-display); font-weight: 500; font-size: clamp(38px,5.6vw,80px); line-height: 1.04; margin: .26em 0 0; max-inline-size: 18ch; text-wrap: balance; }
+  .herotext h1 :global(i), .herotext h1 :global(em) { font-style: italic; }
+  .herotext h1 :global(b), .herotext h1 :global(strong) { font-weight: 600; }
+  .herotext h1 :global(small) { display: block; font-style: normal; font-weight: 500; font-size: .42em; opacity: .9; letter-spacing: .02em; margin-block-start: .55em; }
   .cream h1 { color: var(--c-petrol-head); }
   .petrol h1 { color: #F6F1E6; }
-  .attribution { font-family: var(--ff-mono); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; margin: 18px 0 0; }
-  .cream .attribution { color: var(--c-gold-deep); }
-  .petrol .attribution { color: var(--c-gold-light); }
-  .herotext .intro-p { font-size: 16.5px; line-height: 1.7; max-inline-size: 52ch; margin: 26px 0 0; white-space: pre-line; }
+  .herotext .intro-p { font-size: 16.5px; line-height: 1.7; max-inline-size: 52ch; margin: 26px 0 0; }
+  .herotext .intro-p :global(i), .herotext .intro-p :global(em) { font-style: italic; }
   .cream p { color: var(--c-ink-soft); }
   .petrol p { color: rgba(237,231,216,.78); }
   .cta {

@@ -1,21 +1,42 @@
 ---
 const { block } = Astro.props
+const inline = block.variant === 'inline'
 ---
-<section class="cta-sec" data-reveal>
-  <div class="wrap inner">
-    <h2>{block.heading}</h2>
-    {block.text && <p>{block.text}</p>}
-    {block.buttonLabel && block.buttonHref && <a class="btn" href={block.buttonHref}>{block.buttonLabel}</a>}
-  </div>
-</section>
+{inline ? (
+  <section class="cta-inline" data-reveal>
+    <div class="wrap row">
+      <p class="lead">{block.heading}</p>
+      {block.buttonLabel && block.buttonHref && <a class="btn-out" href={block.buttonHref}>{block.buttonLabel}</a>}
+    </div>
+  </section>
+) : (
+  <section class="cta-band" data-reveal>
+    <div class="wrap">
+      <h2>{block.heading}</h2>
+      {block.text && <p>{block.text}</p>}
+      {block.buttonLabel && block.buttonHref && <a class="btn" href={block.buttonHref}>{block.buttonLabel}</a>}
+    </div>
+  </section>
+)}
 
 <style>
-  .cta-sec { background: var(--c-petrol); color: var(--c-cream-text); padding-block: var(--pad-y); }
-  .inner { max-inline-size: 46ch; }
-  .cta-sec h2 { font-size: var(--fs-h2); color: #F4EFE2; margin: 0 0 .5em; }
-  .cta-sec p { color: var(--c-sand, rgba(241,236,221,.7)); margin: 0 0 1.8rem; }
+  /* Variante « ligne » crème (clôture de page) */
+  .cta-inline { background: var(--c-cream); padding-block: clamp(56px,8vw,120px); }
+  .row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px; }
+  .lead { font-family: var(--ff-display); font-size: clamp(24px,3vw,40px); line-height: 1.3; color: var(--c-petrol-head); margin: 0; max-inline-size: 20ch; }
+  .btn-out {
+    display: inline-flex; padding: 15px 26px; border: 1px solid var(--c-gold-deep); border-radius: 40px;
+    font-family: var(--ff-mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--c-petrol-head);
+    white-space: nowrap; transition: background .4s, color .4s;
+  }
+  .btn-out:hover { background: var(--c-petrol-head); color: #F5F2EA; }
+
+  /* Variante bande pétrole */
+  .cta-band { background: var(--c-petrol); color: var(--c-cream-text); padding-block: var(--pad-y); }
+  .cta-band h2 { font-size: var(--fs-h2); color: #F4EFE2; margin: 0 0 .5em; max-inline-size: 22ch; }
+  .cta-band p { color: rgba(241,236,221,.7); margin: 0 0 1.8rem; max-inline-size: 46ch; }
   .btn {
-    display: inline-flex; padding: 14px 26px; border: 1px solid var(--c-gold-light); border-radius: 40px;
+    display: inline-flex; padding: 15px 26px; border: 1px solid var(--c-gold-light); border-radius: 40px;
     font-family: var(--ff-mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #F6F1E6;
     transition: background .4s, color .4s;
   }

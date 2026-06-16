@@ -187,20 +187,63 @@ export interface Page {
   layout?:
     | (
         | {
-            /**
-             * Sur-titre mono (lieu / mention).
-             */
+            variant?: ('cream' | 'petrol' | 'media') | null;
             eyebrow?: string | null;
             heading: string;
             intro?: string | null;
             ctaLabel?: string | null;
-            /**
-             * Lien du bouton (ex. /fr/contact/).
-             */
             ctaHref?: string | null;
+            portrait?: (number | null) | Media;
+            /**
+             * URL d’image directe si pas d’upload.
+             */
+            portraitUrl?: string | null;
+            portraitCaption?: string | null;
+            /**
+             * Étiquette « à venir » sur l’emplacement photo. Optionnel.
+             */
+            comingSoon?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'hero';
+          }
+        | {
+            eyebrow?: string | null;
+            /**
+             * Phrase forte (grande serif).
+             */
+            lead?: string | null;
+            body?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'statement';
+          }
+        | {
+            items?:
+              | {
+                  term: string;
+                  caption?: string | null;
+                  text?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'manifesto';
           }
         | {
             eyebrow?: string | null;
@@ -232,19 +275,86 @@ export interface Page {
             blockType: 'services';
           }
         | {
+            items?:
+              | {
+                  title: string;
+                  text?: string | null;
+                  tags?:
+                    | {
+                        label: string;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  imageCaption?: string | null;
+                  imageUrl?: string | null;
+                  comingSoon?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'serviceDetail';
+          }
+        | {
+            eyebrow?: string | null;
+            heading?: string | null;
+            items?:
+              | {
+                  title: string;
+                  text?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'steps';
+          }
+        | {
+            eyebrow?: string | null;
+            heading?: string | null;
+            items?:
+              | {
+                  tag?: string | null;
+                  title: string;
+                  text?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'milestones';
+          }
+        | {
+            eyebrow?: string | null;
+            body?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            signatureName?: string | null;
+            role?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'story';
+          }
+        | {
             eyebrow?: string | null;
             heading?: string | null;
             items?:
               | {
                   caption: string;
-                  /**
-                   * Mention (ex. « à venir »). Optionnel.
-                   */
                   tag?: string | null;
                   image?: (number | null) | Media;
-                  /**
-                   * URL d’image directe (ex. /literature_cafe.jpg) si pas d’upload.
-                   */
                   imageUrl?: string | null;
                   id?: string | null;
                 }[]
@@ -256,9 +366,6 @@ export interface Page {
         | {
             eyebrow?: string | null;
             quote: string;
-            /**
-             * Nom en script (signature).
-             */
             signatureName?: string | null;
             role?: string | null;
             portrait?: (number | null) | Media;
@@ -283,15 +390,13 @@ export interface Page {
               };
               [k: string]: unknown;
             } | null;
-            /**
-             * Note de marge. Optionnel.
-             */
             note?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'prose';
           }
         | {
+            variant?: ('cream' | 'petrol') | null;
             quote: string;
             attribution?: string | null;
             id?: string | null;
@@ -299,6 +404,7 @@ export interface Page {
             blockType: 'pullquote';
           }
         | {
+            variant?: ('petrol' | 'inline') | null;
             heading: string;
             text?: string | null;
             buttonLabel?: string | null;
@@ -306,6 +412,32 @@ export interface Page {
             id?: string | null;
             blockName?: string | null;
             blockType: 'cta';
+          }
+        | {
+            eyebrow?: string | null;
+            heading?: string | null;
+            intro?: string | null;
+            nameLabel?: string | null;
+            emailLabel?: string | null;
+            projectLabel?: string | null;
+            projectOptions?:
+              | {
+                  label: string;
+                  id?: string | null;
+                }[]
+              | null;
+            messageLabel?: string | null;
+            messagePlaceholder?: string | null;
+            submitLabel?: string | null;
+            writeLabel?: string | null;
+            meetLabel?: string | null;
+            meetLocation?: string | null;
+            meetNote?: string | null;
+            langsLabel?: string | null;
+            langsValue?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contactForm';
           }
       )[]
     | null;
@@ -446,11 +578,39 @@ export interface PagesSelect<T extends boolean = true> {
         hero?:
           | T
           | {
+              variant?: T;
               eyebrow?: T;
               heading?: T;
               intro?: T;
               ctaLabel?: T;
               ctaHref?: T;
+              portrait?: T;
+              portraitUrl?: T;
+              portraitCaption?: T;
+              comingSoon?: T;
+              id?: T;
+              blockName?: T;
+            };
+        statement?:
+          | T
+          | {
+              eyebrow?: T;
+              lead?: T;
+              body?: T;
+              id?: T;
+              blockName?: T;
+            };
+        manifesto?:
+          | T
+          | {
+              items?:
+                | T
+                | {
+                    term?: T;
+                    caption?: T;
+                    text?: T;
+                    id?: T;
+                  };
               id?: T;
               blockName?: T;
             };
@@ -482,6 +642,69 @@ export interface PagesSelect<T extends boolean = true> {
                     text?: T;
                     id?: T;
                   };
+              id?: T;
+              blockName?: T;
+            };
+        serviceDetail?:
+          | T
+          | {
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    tags?:
+                      | T
+                      | {
+                          label?: T;
+                          id?: T;
+                        };
+                    imageCaption?: T;
+                    imageUrl?: T;
+                    comingSoon?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        steps?:
+          | T
+          | {
+              eyebrow?: T;
+              heading?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        milestones?:
+          | T
+          | {
+              eyebrow?: T;
+              heading?: T;
+              items?:
+                | T
+                | {
+                    tag?: T;
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        story?:
+          | T
+          | {
+              eyebrow?: T;
+              body?: T;
+              signatureName?: T;
+              role?: T;
               id?: T;
               blockName?: T;
             };
@@ -525,6 +748,7 @@ export interface PagesSelect<T extends boolean = true> {
         pullquote?:
           | T
           | {
+              variant?: T;
               quote?: T;
               attribution?: T;
               id?: T;
@@ -533,10 +757,38 @@ export interface PagesSelect<T extends boolean = true> {
         cta?:
           | T
           | {
+              variant?: T;
               heading?: T;
               text?: T;
               buttonLabel?: T;
               buttonHref?: T;
+              id?: T;
+              blockName?: T;
+            };
+        contactForm?:
+          | T
+          | {
+              eyebrow?: T;
+              heading?: T;
+              intro?: T;
+              nameLabel?: T;
+              emailLabel?: T;
+              projectLabel?: T;
+              projectOptions?:
+                | T
+                | {
+                    label?: T;
+                    id?: T;
+                  };
+              messageLabel?: T;
+              messagePlaceholder?: T;
+              submitLabel?: T;
+              writeLabel?: T;
+              meetLabel?: T;
+              meetLocation?: T;
+              meetNote?: T;
+              langsLabel?: T;
+              langsValue?: T;
               id?: T;
               blockName?: T;
             };

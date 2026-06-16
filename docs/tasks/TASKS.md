@@ -88,8 +88,18 @@
 - [x] Déploiement Avignon (reset DB + migrate + seed + régénération) — OK, design live, FR/ES/EN/DE, 20 pages 200
 - [~] Test/validation Val (rendu, méga-menu, strike, hero, 4 langues) → en attente
 
+### FEAT-009 — Pages intérieures Philosophie/Services/À propos/Contact + i18n
+- [x] Lire le 2ᵉ handoff Claude Design (4 pages) ; nouveaux blocs (statement, manifesto, serviceDetail, steps, milestones, story, contactForm)
+- [x] Hero enrichi (variant crème/pétrole/media + portrait) ; pullquote/cta variant
+- [x] Seed des 4 pages, contenu d'exemple FR traduit ES/EN/DE
+- [x] Formulaire contact (mailto, site statique) piloté CMS
+- [x] DB reset + migration + types/importmap + build/run Tulear : 20 pages 200, rendu fidèle, i18n OK
+- [~] Déploiement Avignon (reset DB + migrate + seed + régénération) → en cours
+- [ ] Demander test à Val (les 4 pages, 4 langues, formulaire)
+
 ## Backlog (FEAT suivants)
-- [ ] Contenu réel (remplacer l'exemple) + photos + SEO + formulaire contact
+- [ ] Envoi e-mail serveur du formulaire (endpoint Payload + SMTP) au lieu du mailto
+- [ ] Contenu réel (remplacer l'exemple) + vraies photos + SEO
 - [ ] Sous-menus/nav pilotés depuis le CMS de façon générique (au-delà de Services)
 - [ ] FEAT-004 — Modèle Payload (collections/globals/blocs) + seed contenu FR
 - [ ] FEAT-005 — Pages (Accueil, Philosophie, Services, À propos, Contact) + formulaire contact

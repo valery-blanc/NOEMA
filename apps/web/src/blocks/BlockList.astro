@@ -1,27 +1,41 @@
 ---
 import HeroText from './HeroText.astro'
+import Statement from './Statement.astro'
+import Manifesto from './Manifesto.astro'
 import Values from './Values.astro'
 import ServicesBand from './ServicesBand.astro'
+import ServiceDetail from './ServiceDetail.astro'
+import Steps from './Steps.astro'
+import Milestones from './Milestones.astro'
+import Story from './Story.astro'
 import Gallery from './Gallery.astro'
 import Founder from './Founder.astro'
 import Prose from './Prose.astro'
 import PullQuote from './PullQuote.astro'
 import Cta from './Cta.astro'
+import ContactForm from './ContactForm.astro'
 
-const { blocks = [], lang = 'fr' } = Astro.props
+const { blocks = [], lang = 'fr', contactEmail = 'bonjour@noema.ch' } = Astro.props
 
 const MAP = {
   hero: HeroText,
+  statement: Statement,
+  manifesto: Manifesto,
   values: Values,
   services: ServicesBand,
+  serviceDetail: ServiceDetail,
+  steps: Steps,
+  milestones: Milestones,
+  story: Story,
   gallery: Gallery,
   founder: Founder,
   prose: Prose,
   pullquote: PullQuote,
   cta: Cta,
+  contactForm: ContactForm,
 }
 ---
 {blocks.map((block) => {
   const Comp = MAP[block.blockType]
-  return Comp ? <Comp block={block} lang={lang} /> : null
+  return Comp ? <Comp block={block} lang={lang} contactEmail={contactEmail} /> : null
 })}

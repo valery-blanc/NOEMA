@@ -302,6 +302,11 @@ seules les variables d'environnement et le domaine changent.
 - **FEAT-001** (2026-06-15) — Fondations : choix de stack, architecture, navigation, design
   system (palette, typo, rythme), i18n/RTL, modèle de contenu. Registre visuel « chaleur
   éditoriale » validé (sites de référence observés ; pétrole en accent rare). Conception validée.
+- **FEAT-009** (2026-06-16) — Pages intérieures **Philosophie / Services / À propos / Contact**
+  (2ᵉ handoff Claude Design), pilotées CMS et traduites FR/ES/EN/DE. Nouveaux blocs : `statement`,
+  `manifesto` (I·II·III·IV), `serviceDetail` (tags + image), `steps`, `milestones`, `story`,
+  `contactForm` (formulaire `mailto` côté statique). `hero` enrichi (variants). Envoi e-mail
+  serveur = évolution ultérieure.
 - **FEAT-008** (2026-06-16) — Intégration de la **charte Claude Design** (`Noema-site.dc.html`) :
   palette crème/pétrole/or + 4 polices (Cormorant, Hanken Grotesk, IBM Plex Mono, Pinyon Script),
   en-tête fixe pleine largeur (strike animé + **méga-menu Services piloté CMS**), home

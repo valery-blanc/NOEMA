@@ -1,26 +1,54 @@
 ---
-// Hero de page intérieure (sans image) — sur crème, dégage la hauteur de l'en-tête.
+// Hero de page intérieure — variante crème ou pétrole, portrait optionnel (À propos).
 const { block } = Astro.props
+const variant = block.variant === 'petrol' ? 'petrol' : 'cream'
+const portrait = block.portrait?.url || block.portraitUrl || null
+const hasPortrait = portrait !== null || block.comingSoon || block.portraitCaption
 ---
-<section class="herotext" data-reveal>
-  <div class="wrap">
-    {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
-    {block.heading && <h1>{block.heading}</h1>}
-    {block.intro && <p>{block.intro}</p>}
-    {block.ctaLabel && block.ctaHref && <a class="cta" href={block.ctaHref}>{block.ctaLabel}</a>}
+<section class={`herotext ${variant} ${hasPortrait ? 'with-portrait' : ''}`} data-reveal>
+  <div class="wrap grid">
+    <div class="text">
+      {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
+      {block.heading && <h1>{block.heading}</h1>}
+      {block.intro && <p>{block.intro}</p>}
+      {block.ctaLabel && block.ctaHref && <a class="cta" href={block.ctaHref}>{block.ctaLabel}</a>}
+    </div>
+    {hasPortrait && (
+      <figure class={`portrait ${portrait ? '' : 'ph'}`}>
+        {portrait ? <img src={portrait} alt={block.portraitCaption ?? ''} /> : <span class="cap">{block.portraitCaption ?? 'portrait'}</span>}
+        {block.comingSoon && <span class="soon">{block.comingSoon}</span>}
+      </figure>
+    )}
   </div>
 </section>
 
 <style>
-  .herotext { padding-block: calc(var(--header-h) + clamp(48px,8vw,120px)) clamp(24px,4vw,48px); background: var(--c-cream); }
+  .herotext { padding-block: calc(var(--header-h) + clamp(48px,8vw,120px)) clamp(40px,7vw,110px); }
+  .herotext.cream { background: var(--c-cream); }
+  .herotext.petrol { background: var(--c-petrol); color: var(--c-cream-text-2); }
+  .grid { display: grid; grid-template-columns: 1fr; gap: clamp(28px,5vw,64px); align-items: center; }
+  .herotext.with-portrait .grid { grid-template-columns: 1fr .8fr; }
   .eyebrow { color: var(--c-gold-deep); }
-  .herotext h1 { font-size: clamp(38px,6vw,88px); line-height: 1; color: var(--c-petrol-head); margin: .3em 0 0; max-inline-size: 18ch; }
-  .herotext p { font-size: 16.5px; line-height: 1.7; color: var(--c-ink-soft); max-inline-size: 52ch; margin: 22px 0 0; }
+  .petrol .eyebrow { color: var(--c-gold-light); }
+  .herotext h1 { font-size: clamp(42px,6.4vw,92px); line-height: 1; margin: .26em 0 0; max-inline-size: 16ch; text-wrap: balance; }
+  .cream h1 { color: var(--c-petrol-head); }
+  .petrol h1 { color: #F6F1E6; }
+  .herotext p { font-size: 16.5px; line-height: 1.7; max-inline-size: 52ch; margin: 26px 0 0; }
+  .cream p { color: var(--c-ink-soft); }
+  .petrol p { color: rgba(237,231,216,.78); }
   .cta {
-    display: inline-flex; margin-block-start: 28px; padding: 14px 26px;
-    border: 1px solid var(--c-gold-deep); border-radius: 40px;
-    font-family: var(--ff-mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--c-petrol-head);
-    transition: background .4s, color .4s;
+    display: inline-flex; margin-block-start: 28px; padding: 14px 26px; border-radius: 40px;
+    font-family: var(--ff-mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+    border: 1px solid var(--c-gold-deep); color: var(--c-petrol-head); transition: background .4s, color .4s;
   }
   .cta:hover { background: var(--c-petrol); color: var(--c-cream-text); border-color: var(--c-petrol); }
+  .portrait { position: relative; margin: 0; aspect-ratio: 4/5; border-radius: 6px; overflow: hidden; }
+  .portrait img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .portrait.ph {
+    border: 1px solid var(--c-line);
+    background: linear-gradient(0deg, rgba(19,58,66,.05), rgba(19,58,66,.05)), repeating-linear-gradient(135deg, rgba(19,58,66,.07) 0 1px, transparent 1px 11px), var(--c-placeholder-2);
+  }
+  .portrait .cap { position: absolute; inset-inline-start: 18px; inset-block-end: 16px; font-family: var(--ff-mono); font-size: 11px; color: rgba(19,58,66,.55); }
+  .portrait .soon { position: absolute; inset-inline-end: 16px; inset-block-start: 14px; font-family: var(--ff-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: rgba(169,138,91,.95); }
+  @media (max-width: 860px) { .herotext.with-portrait .grid { grid-template-columns: 1fr; } }
 </style>

@@ -1,0 +1,23 @@
+---
+import { lexicalToHtml } from '../lib/lexical.js'
+const { block } = Astro.props
+const html = block.body ? lexicalToHtml(block.body) : ''
+---
+<section class="story" data-reveal>
+  <div class="wrap">
+    {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
+    {html && <div class="body" set:html={html} />}
+    {block.signatureName && <div class="sig">{block.signatureName}</div>}
+    {block.role && <div class="role">{block.role}</div>}
+  </div>
+</section>
+
+<style>
+  .story { background: var(--c-cream); padding-block: clamp(56px,8vw,120px); }
+  .eyebrow { color: var(--c-gold-deep); margin-block-end: 28px; }
+  .body { max-inline-size: 64ch; }
+  .body :global(p) { font-size: 16.5px; line-height: 1.85; color: rgba(31,42,44,.8); margin: 0 0 20px; }
+  .body :global(p:first-child) { font-family: var(--ff-display); font-size: clamp(22px,2.6vw,32px); line-height: 1.4; color: var(--c-petrol-head); }
+  .sig { font-family: var(--ff-script); font-size: 46px; line-height: 1; color: #173A40; margin-block-start: 28px; }
+  .role { font-family: var(--ff-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--c-ink-mute); margin-block-start: 8px; }
+</style>

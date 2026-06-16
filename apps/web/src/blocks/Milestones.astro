@@ -1,0 +1,34 @@
+---
+const { block } = Astro.props
+const items = block.items ?? []
+---
+<section class="ms">
+  <div class="wrap">
+    <div class="head">
+      {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
+      {block.heading && <h2>{block.heading}</h2>}
+    </div>
+    <div class="grid">
+      {items.map((it, i) => (
+        <div class="m" data-reveal style={`transition-delay:${i * 80}ms`}>
+          {it.tag && <span class="tag">{it.tag}</span>}
+          <h3>{it.title}</h3>
+          {it.text && <p>{it.text}</p>}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .ms { background: var(--c-panel); padding-block: var(--pad-y); }
+  .head { margin-block-end: clamp(36px,5vw,56px); }
+  .eyebrow { color: var(--c-gold-deep); }
+  .head h2 { font-size: var(--fs-h2); color: var(--c-petrol-head); margin: 14px 0 0; max-inline-size: 18ch; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(24px,3vw,48px); }
+  .m { border-block-start: 1px solid var(--c-line); padding-block-start: 18px; }
+  .tag { font-family: var(--ff-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--c-gold-deep); }
+  .m h3 { font-family: var(--ff-display); font-size: 25px; color: var(--c-petrol-head); margin: 12px 0 8px; }
+  .m p { font-size: 14.5px; line-height: 1.7; color: var(--c-ink-soft); margin: 0; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+</style>

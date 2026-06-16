@@ -1,0 +1,34 @@
+---
+const { block } = Astro.props
+const items = block.items ?? []
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII']
+---
+<section class="manifesto">
+  <div class="wrap">
+    {items.map((it, i) => (
+      <div class="conv" data-reveal>
+        <div class="num">{ROMAN[i] ?? i + 1}</div>
+        <div class="body">
+          <h2>{it.term}</h2>
+          {it.caption && <span class="cap">{it.caption}</span>}
+          {it.text && <p>{it.text}</p>}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .manifesto { background: var(--c-cream); padding-block: 0 clamp(40px,6vw,90px); }
+  .conv {
+    display: grid; grid-template-columns: 80px 1fr; gap: clamp(20px,4vw,56px);
+    align-items: start; padding-block: clamp(28px,4vw,48px); border-block-start: 1px solid rgba(19,58,66,.18);
+  }
+  .conv:last-child { border-block-end: 1px solid rgba(19,58,66,.18); }
+  .num { font-family: var(--ff-display); font-size: clamp(28px,3vw,44px); color: rgba(169,138,91,.85); }
+  .body { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 18px 40px; align-items: baseline; }
+  .body h2 { font-size: clamp(30px,4vw,58px); color: var(--c-petrol-head); margin: 0; line-height: 1; }
+  .cap { font-family: var(--ff-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--c-ink-mute); }
+  .body p { flex: 1 1 100%; font-size: 15.5px; line-height: 1.8; color: rgba(31,42,44,.72); margin: 6px 0 0; max-inline-size: 64ch; }
+  @media (max-width: 600px) { .conv { grid-template-columns: 48px 1fr; gap: 16px; } }
+</style>

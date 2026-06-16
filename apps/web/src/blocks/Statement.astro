@@ -1,0 +1,27 @@
+---
+import { lexicalToHtml } from '../lib/lexical.js'
+const { block } = Astro.props
+const html = block.body ? lexicalToHtml(block.body) : ''
+---
+<section class="statement" data-reveal>
+  <div class="wrap">
+    {block.eyebrow && <div class="eyebrow tag">{block.eyebrow}</div>}
+    {block.lead && <p class="lead">{block.lead}</p>}
+    {html && <div class="body" set:html={html} />}
+    <div class="clear"></div>
+  </div>
+</section>
+
+<style>
+  .statement { background: var(--c-cream); padding-block: clamp(64px,9vw,130px); }
+  .tag { display: block; margin-block-end: 34px; }
+  .lead {
+    font-family: var(--ff-display); font-weight: 500; font-size: clamp(26px,3.4vw,46px);
+    line-height: 1.34; color: var(--c-petrol-head); margin: 0; max-inline-size: 24ch;
+    float: inline-start; padding-inline-end: clamp(24px,4vw,64px);
+  }
+  .body :global(p) { font-size: 16.5px; line-height: 1.85; color: rgba(31,42,44,.8); margin: 0 0 20px; }
+  .body :global(p:last-child) { margin-block-end: 0; }
+  .clear { clear: both; }
+  @media (max-width: 860px) { .lead { float: none; max-inline-size: none; padding-inline-end: 0; margin-block-end: 28px; } }
+</style>

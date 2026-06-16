@@ -36,5 +36,5 @@ const rest = heroBlock ? blocks.slice(1) : blocks
     ctaHref={heroBlock?.ctaHref}
     lang={lang}
   />
-  <BlockList blocks={rest} lang={lang} />
+  <BlockList blocks={rest} lang={lang} contactEmail={settings?.contactEmail ?? 'bonjour@noema.ch'} />
 </Base>

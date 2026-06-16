@@ -29,7 +29,8 @@ try {
 } catch (e) {}
 
 const blocks = page?.layout ?? []
+const contactEmail = settings?.contactEmail ?? 'bonjour@noema.ch'
 ---
 <Base lang={lang} currentSlug={slug} title={page?.title ?? slug} settings={settings} navPages={navPages}>
-  <BlockList blocks={blocks} lang={lang} />
+  <BlockList blocks={blocks} lang={lang} contactEmail={contactEmail} />
 </Base>

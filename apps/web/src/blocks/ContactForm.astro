@@ -1,0 +1,98 @@
+---
+// Contact : formulaire + coordonnées. Site statique → l'envoi compose un courriel (mailto)
+// pré-rempli vers contactEmail (pas de backend). L'envoi SMTP serveur viendra ensuite.
+const { block, contactEmail = 'bonjour@noema.ch' } = Astro.props
+const opts = (block.projectOptions ?? []).map((o) => o.label)
+---
+<section class="contact">
+  <div class="wrap grid">
+    <div class="intro" data-reveal>
+      {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
+      {block.heading && <h1>{block.heading}</h1>}
+      {block.intro && <p>{block.intro}</p>}
+
+      <div class="coords">
+        <div class="co">
+          <span class="k">{block.writeLabel ?? 'Écrire'}</span>
+          <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+        </div>
+        <div class="co">
+          <span class="k">{block.meetLabel ?? 'Rencontrer'}</span>
+          <span>{block.meetLocation}</span>
+          {block.meetNote && <span class="sub">{block.meetNote}</span>}
+        </div>
+        <div class="co">
+          <span class="k">{block.langsLabel ?? 'Langues'}</span>
+          <span>{block.langsValue}</span>
+        </div>
+      </div>
+    </div>
+
+    <form class="form" data-reveal data-contact-form data-email={contactEmail}>
+      <label>
+        <span>{block.nameLabel ?? 'Nom'}</span>
+        <input type="text" name="name" placeholder="Votre nom" required />
+      </label>
+      <label>
+        <span>{block.emailLabel ?? 'Courriel'}</span>
+        <input type="email" name="email" placeholder="vous@exemple.ch" required />
+      </label>
+      <label>
+        <span>{block.projectLabel ?? 'Votre projet'}</span>
+        <select name="project">
+          {opts.map((o) => <option value={o}>{o}</option>)}
+        </select>
+      </label>
+      <label>
+        <span>{block.messageLabel ?? 'Message'}</span>
+        <textarea name="message" rows="5" placeholder={block.messagePlaceholder ?? 'Dites-moi quelques mots…'} required></textarea>
+      </label>
+      <button type="submit">{block.submitLabel ?? 'Envoyer le message'}</button>
+    </form>
+  </div>
+</section>
+
+<script>
+  // Envoi sans backend : compose un courriel pré-rempli (mailto).
+  document.querySelectorAll('[data-contact-form]').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault()
+      const to = form.dataset.email
+      const f = new FormData(form)
+      const subject = `Contact NOÊMA — ${f.get('project') || ''}`.trim()
+      const body = `Nom: ${f.get('name')}\nCourriel: ${f.get('email')}\nProjet: ${f.get('project')}\n\n${f.get('message')}`
+      window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    })
+  })
+</script>
+
+<style>
+  .contact { background: var(--c-cream); padding-block: calc(var(--header-h) + clamp(48px,8vw,110px)) var(--pad-y); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px,6vw,90px); align-items: start; }
+  .eyebrow { color: var(--c-gold-deep); }
+  .intro h1 { font-size: clamp(38px,5.4vw,80px); line-height: 1; color: var(--c-petrol-head); margin: .2em 0 0; max-inline-size: 14ch; }
+  .intro > p { font-size: 16.5px; line-height: 1.7; color: var(--c-ink-soft); max-inline-size: 46ch; margin: 24px 0 0; }
+  .coords { margin-block-start: clamp(36px,5vw,56px); display: grid; gap: 22px; }
+  .co { display: grid; gap: 4px; border-block-start: 1px solid var(--c-line); padding-block-start: 14px; }
+  .co .k { font-family: var(--ff-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--c-gold-deep); }
+  .co a, .co span:not(.k):not(.sub) { font-family: var(--ff-display); font-size: 22px; color: var(--c-petrol-head); }
+  .co .sub { font-size: 13px; color: var(--c-ink-mute); }
+
+  .form { display: grid; gap: 20px; }
+  .form label { display: grid; gap: 8px; }
+  .form label span { font-family: var(--ff-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--c-ink-mute); }
+  .form input, .form select, .form textarea {
+    inline-size: 100%; padding: 14px 16px; border: 1px solid var(--c-line); border-radius: 4px;
+    background: #fff; color: var(--c-ink); font-family: var(--ff-body); font-size: 15px;
+  }
+  .form input:focus, .form select:focus, .form textarea:focus { outline: none; border-color: var(--c-gold); }
+  .form textarea { resize: vertical; }
+  .form button {
+    justify-self: start; margin-block-start: 6px; padding: 15px 30px; border: none; border-radius: 40px;
+    background: var(--c-petrol); color: var(--c-cream-text);
+    font-family: var(--ff-mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; cursor: pointer;
+    transition: background .4s;
+  }
+  .form button:hover { background: var(--c-gold-deep); }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+</style>

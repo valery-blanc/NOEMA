@@ -107,6 +107,16 @@
 - [x] Déploiement Avignon + pipeline média vérifié de bout en bout (HTTP 200 sur /media/…)
 - [ ] Demander test à Val (uploader une photo dans l'admin → Aperçu → Publier)
 
+### FEAT-011 — Titre hero mis en forme (citation italique + auteur) + retours à la ligne
+- [x] Bloc Hero : champs `headingRich` (richText) + `attribution` ; intro respecte les retours ligne
+- [x] Rendu inline du richText (lexicalToInlineHtml) dans HeroMedia + HeroText
+- [x] Migration INCRÉMENTALE (add_hero_rich) — sans reset ni re-seed (préserve contenu/photos)
+- [x] Déploiement Avignon (migrate + régénération, pas de seed) ; à vérifier
+- [ ] Demander test à Val (citation italique + auteur dans le hero accueil)
+
+> ⚠️ Règle : contenu réel désormais en base → **plus de reset DB**. Évolutions de modèle =
+> **migrations incrémentales** + déploiement `payload migrate` (sans `pnpm seed`).
+
 ## Backlog (FEAT suivants)
 - [ ] Envoi e-mail serveur du formulaire (endpoint Payload + SMTP) au lieu du mailto
 - [ ] Contenu réel (remplacer l'exemple) + vraies photos + SEO

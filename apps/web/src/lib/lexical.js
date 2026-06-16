@@ -48,3 +48,19 @@ export function lexicalToHtml(value) {
   if (!root || !root.children) return ''
   return root.children.map(renderNode).join('')
 }
+
+// Rendu INLINE (sans <p>) : pour un titre/citation mis en forme.
+// Les paragraphes sont séparés par un retour à la ligne (<br>), le gras/italique conservés.
+export function lexicalToInlineHtml(value) {
+  const root = value?.root || value
+  if (!root || !root.children) return ''
+  return root.children
+    .map((n) => (n.type === 'paragraph' ? renderChildren(n) : renderNode(n)))
+    .filter(Boolean)
+    .join('<br>')
+}
+
+// Vrai si le richText contient au moins un texte non vide.
+export function lexicalHasContent(value) {
+  return lexicalToInlineHtml(value).replace(/<[^>]*>/g, '').trim().length > 0
+}
